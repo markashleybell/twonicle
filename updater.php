@@ -8,53 +8,72 @@
             var mostRecentId = 100; // We'll get this from db eventually
             var currentPage = 1;
             var statuses = [];
+            var userIds = [] // We'll get these from the db eventually too, so we don't re-fetch users we already have data for every time
             var users = [];
 
             function addUser(user)
             {
-                $.ajax({
-                    url: 'http://api.twitter.com/1/users/show.json?callback=?',
-                    data: { user_id: user.id },
-                    dataType: 'jsonp',
-                    type: 'GET',
-                    async: false,
-                    success: function(data, status, request) { 
-                        users.push(data);
-                        users.sort(function(a, b) {
-                            return a.id - b.id;
-                        });
-                    },
-                    error: function(request, status, error)
-                    {
-                        console.log(status);
-                        console.log(error);
-                    }
+                userIds.push(user.id);
+                userIds.sort(function(a, b) {
+                    return a - b;
                 });
             }
 
-            function findUser(users, id)
+            function findUser(idList, id)
             {
-                if(users.length < 1) return false;
+                if(idList.length < 1) return false;
 
-                var high = users.length - 1;
+                var high = idList.length - 1;
                 var low = 0;
                                 
                 while(low <= high)
                 {
                     mid = parseInt((low + high) / 2);
-                    if(users[mid].id == id) return true;
-                    else if(users[mid].id > id) high = (mid - 1); // Search lower values
-                    else if(users[mid].id < id) low = (mid + 1); // Search upper values
+                    if(idList[mid] == id) return true;
+                    else if(idList[mid] > id) high = (mid - 1); // Search lower values
+                    else if(idList[mid] < id) low = (mid + 1); // Search upper values
                 }
                 
                 return false; // Value not found
+            }
+
+            function retrieveUserData()
+            {
+                if(userIds.length > 0)
+                {
+                    var id = userIds.pop();
+                    console.log('get ' + id);
+                    retrieveUserData();
+                    /*
+                    $.ajax({
+                        url: 'http://api.twitter.com/1/users/show.json?callback=?',
+                        data: { user_id: ids[i] },
+                        dataType: 'jsonp',
+                        type: 'GET',
+                        success: function(data, status, request) { 
+                            $('#output').append('<p>Got user ' + data.screen_name + '</p>');
+                            users.push(data);
+                        },
+                        error: function(request, status, error)
+                        {
+                            console.log(status);
+                            console.log(error);
+                        }
+                    });
+                    */
+                }
+                else
+                {
+                    console.log(statuses.length);
+                    console.log(users);
+                }
             }
             
             function getTweets()
             {
                 $.ajax({
                     url: 'http://api.twitter.com/1/statuses/user_timeline.json?callback=?',
-                    data: { screen_name: 'markeebee', include_rts: 1, trim_user: 1, count: 10, since_id: mostRecentId, page: currentPage },
+                    data: { screen_name: 'markeebee', include_rts: 1, trim_user: 1, count: 200, since_id: mostRecentId, page: currentPage },
                     dataType: 'jsonp',
                     type: 'GET',
                     success: function(data, status, request) { 
@@ -70,7 +89,7 @@
                             if(item.retweeted_status)
                                 user = item.retweeted_status.user;
 
-                            if(!findUser(users, user.id))
+                            if(!findUser(userIds, user.id))
                             {
                                 addUser(user);
                             }
@@ -85,8 +104,7 @@
                         }
                         else
                         {
-                            console.log(statuses.length);
-                            console.log(users);
+                            retrieveUserData(userIds);
                         }
                     },
                     error: function(request, status, error)
@@ -107,6 +125,6 @@
 	</head>
 	<body>
 		<p><input type="button" value="IMPORT TWEETS" id="import" /></p>
-                <div id="output"></div>
+        <div id="output"></div>
 	</body>
 </html>
