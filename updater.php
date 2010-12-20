@@ -43,16 +43,16 @@
                 {
                     var id = userIds.pop();
                     console.log('get ' + id);
-                    retrieveUserData();
-                    /*
+                    
                     $.ajax({
                         url: 'http://api.twitter.com/1/users/show.json?callback=?',
-                        data: { user_id: ids[i] },
+                        data: { user_id: id },
                         dataType: 'jsonp',
                         type: 'GET',
                         success: function(data, status, request) { 
                             $('#output').append('<p>Got user ' + data.screen_name + '</p>');
                             users.push(data);
+                            retrieveUserData();
                         },
                         error: function(request, status, error)
                         {
@@ -60,7 +60,7 @@
                             console.log(error);
                         }
                     });
-                    */
+                    
                 }
                 else
                 {
