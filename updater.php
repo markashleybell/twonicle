@@ -5,10 +5,10 @@
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
         <script type="text/javascript">
             
-            var mostRecentId = 100; // We'll get this from db eventually
+            var mostRecentId = 14671866010533887; //100; // We'll get this from db eventually
+            var userIds = []; // We'll get these from the db eventually too, so we don't re-fetch users we already have data for every time
             var currentPage = 1;
             var statuses = [];
-            var userIds = [] // We'll get these from the db eventually too, so we don't re-fetch users we already have data for every time
             var users = [];
 
             function addUser(user)
@@ -35,6 +35,40 @@
                 }
                 
                 return false; // Value not found
+            }
+            
+            function saveStatus()
+            {
+                if(statuses.length > 0)
+                {
+                    var s = statuses.pop();
+
+                    $.ajax({
+                        url: 'save_status.php',
+                        data: { status: s },
+                        dataType: 'json',
+                        type: 'POST',
+                        success: function(data, status, request) { 
+                            // $('#output').append('<p>Got user ' + data.screen_name + '</p>');
+                            saveStatus(); // Save the next tweet
+                        },
+                        error: function(request, status, error)
+                        {
+                            console.log(status);
+                            console.log(error);
+                        }
+                    });
+                }
+                else
+                {
+                    console.log('Saved tweets');
+                    
+                    // Kick off the user save
+                }
+            }
+
+            function saveUser()
+            {
             }
 
             function retrieveUserData()
@@ -64,8 +98,11 @@
                 }
                 else
                 {
-                    console.log(statuses.length);
+                    console.log(statuses);
                     console.log(users);
+
+                    // Loop through the statuses and users and insert them all into the db
+                    saveStatus();
                 }
             }
             
