@@ -1,15 +1,51 @@
+<?php
+require('config.php');
+
+// connect to the database
+$mysqli = new mysqli($config['server'], $config['username'], $config['password'], $config['database']);
+
+/* check connection */
+if (mysqli_connect_errno()) {
+    printf("Connect failed: %s\n", mysqli_connect_error());
+    exit();
+}
+
+mysqli_report(MYSQLI_REPORT_ERROR);
+
+$mysqli->set_charset("utf8");
+
+// Get the last tweet id we stored, so that we only retrieve new tweets
+$since = 100;
+
+if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
+    $row = $result->fetch_object();
+    if($row->since) $since = $row->since;
+    $result->close();
+}
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 	<head>
-		<script src="http://platform.twitter.com/anywhere.js?id=idyTlCoEihlkLSC0ezJ1Q&amp;v=1"></script>
+        <style type="text/css">
+            #output { margin: 50px; }
+            #output p { margin: 0; padding: 0; }
+        </style>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
         <script type="text/javascript">
             
-            var mostRecentId = 14671866010533887; //100; // We'll get this from db eventually
+            var mostRecentId = <?php echo $since; ?>;
             var userIds = []; // We'll get these from the db eventually too, so we don't re-fetch users we already have data for every time
             var currentPage = 1;
             var statuses = [];
             var users = [];
+            
+            var outputPanel;
+
+            function log(msg, type)
+            {
+                cls = (typeof type == 'undefined') ? 'std' : type;
+                outputPanel.append('<p class="' + cls + '">' + msg + '</p>');
+            }
 
             function addUser(user)
             {
@@ -53,19 +89,19 @@
                         dataType: 'json',
                         type: 'POST',
                         success: function(data, status, request) { 
-                            // $('#output').append('<p>Got user ' + data.screen_name + '</p>');
+                            log('Saved data for tweet ' + s.id_str);
                             saveStatus(); // Save the next tweet
                         },
                         error: function(request, status, error)
                         {
-                            console.log(status);
-                            console.log(error);
+                            log(status);
+                            log(error);
                         }
                     });
                 }
                 else
                 {
-                    console.log('Saved tweets');
+                    log('Finished saving tweets');
                     
                     // Kick off the user save
                     saveUser();
@@ -84,19 +120,19 @@
                         dataType: 'json',
                         type: 'POST',
                         success: function(data, status, request) { 
-                            // $('#output').append('<p>Got user ' + data.screen_name + '</p>');
+                            log('Saved user data for ' + u.screen_name);
                             saveUser(); // Save the next tweet
                         },
                         error: function(request, status, error)
                         {
-                            console.log(status);
-                            console.log(error);
+                            log(status);
+                            log(error);
                         }
                     });
                 }
                 else
                 {
-                    console.log('Saved users');
+                    log('Finished saving users');
                 }
             }
 
@@ -105,7 +141,6 @@
                 if(userIds.length > 0)
                 {
                     var id = userIds.pop();
-                    console.log('get ' + id);
                     
                     $.ajax({
                         url: 'http://api.twitter.com/1/users/show.json?callback=?',
@@ -113,14 +148,14 @@
                         dataType: 'jsonp',
                         type: 'GET',
                         success: function(data, status, request) { 
-                            $('#output').append('<p>Got user ' + data.screen_name + '</p>');
+                            log('Fetched user ' + data.screen_name);
                             users.push(data);
                             retrieveUserData();
                         },
                         error: function(request, status, error)
                         {
-                            console.log(status);
-                            console.log(error);
+                            log(status);
+                            log(error);
                         }
                     });
                     
@@ -143,7 +178,6 @@
                     dataType: 'jsonp',
                     type: 'GET',
                     success: function(data, status, request) { 
-                        $('#output').append('<p>Got ' + data.length + ' tweets</p>');
                         
                         var i;
 
@@ -152,19 +186,28 @@
                             var item = data[i];
                             var user = item.user;
 
-                            if(item.retweeted_status)
-                                user = item.retweeted_status.user;
-
-                            if(!findUser(userIds, user.id))
+                            // For some reason, 'id_str' can actually be slightly different than 'id' for the same tweet(!?!?)
+                            // This means that the since_id parameter of the user_timeline call doesn't tie up with what we have stored
+                            // We need to manually check our max id against the 'id_str' parameter to avoid odd duplicates here and there
+                            if(item.id_str > mostRecentId)
                             {
-                                addUser(user);
-                            }
+                                if(item.retweeted_status)
+                                    user = item.retweeted_status.user;
 
-                            statuses.push(item);
+                                if(!findUser(userIds, user.id))
+                                {
+                                    addUser(user);
+                                }
+
+                                statuses.push(item);
+                            }
                         }
 
                         if(data.length > 0)
                         {
+                            if(data.length == 1 && data[0].id_str > mostRecentId)
+                                log('Fetched ' + data.length + ' tweets');
+
                             currentPage++;
                             getTweets();
                         }
@@ -175,14 +218,15 @@
                     },
                     error: function(request, status, error)
                     {
-                        console.log(status);
-                        console.log(error);
+                        log(status);
+                        log(error);
                     }
                 });
             }
             
             $(function(){
                
+               outputPanel = $('#output');
                $('#import').bind('click', getTweets);
                
             });
