@@ -40,6 +40,7 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
             var users = [];
             
             var outputPanel;
+            var tweetIdStatus;
 
             function log(msg, type)
             {
@@ -89,7 +90,12 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
                         dataType: 'json',
                         type: 'POST',
                         success: function(data, status, request) { 
-                            log('Saved data for tweet ' + s.id_str);
+                            if(!$('#tweetid').length)
+                            {
+                                outputPanel.append('<p>Saving data for tweet <span id="tweetid"></span></p>');                       
+                                tweetIdStatus = $('#tweetid');
+                            }
+                            tweetIdStatus.html(s.id_str);
                             saveStatus(); // Save the next tweet
                         },
                         error: function(request, status, error)
