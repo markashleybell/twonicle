@@ -42,6 +42,10 @@
                 if(statuses.length > 0)
                 {
                     var s = statuses.pop();
+                    
+                    // If it's a retweet we want the data from the original tweet instead
+                    if(typeof s.retweeted_status != 'undefined')
+                        s = s.retweeted_status;
 
                     $.ajax({
                         url: 'save_status.php',
@@ -64,11 +68,36 @@
                     console.log('Saved tweets');
                     
                     // Kick off the user save
+                    saveUser();
                 }
             }
 
             function saveUser()
             {
+                if(users.length > 0)
+                {
+                    var u = users.pop();
+
+                    $.ajax({
+                        url: 'save_user.php',
+                        data: { user: u },
+                        dataType: 'json',
+                        type: 'POST',
+                        success: function(data, status, request) { 
+                            // $('#output').append('<p>Got user ' + data.screen_name + '</p>');
+                            saveUser(); // Save the next tweet
+                        },
+                        error: function(request, status, error)
+                        {
+                            console.log(status);
+                            console.log(error);
+                        }
+                    });
+                }
+                else
+                {
+                    console.log('Saved users');
+                }
             }
 
             function retrieveUserData()
@@ -98,8 +127,8 @@
                 }
                 else
                 {
-                    console.log(statuses);
-                    console.log(users);
+                    //console.log(statuses);
+                    //console.log(users);
 
                     // Loop through the statuses and users and insert them all into the db
                     saveStatus();

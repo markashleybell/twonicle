@@ -37,5 +37,4 @@ $sql = "INSERT INTO tweets (userid, tweetid, type, time, text, source, favorite,
 $mysqli->query($sql);
 
 echo '{ "success": 1 }';
-
 ?>
