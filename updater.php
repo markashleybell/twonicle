@@ -34,7 +34,7 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
         <script type="text/javascript">
             
             var mostRecentId = <?php echo $since; ?>;
-            var userIds = []; // We'll get these from the db eventually too, so we don't re-fetch users we already have data for every time
+            var userIds = [];
             var currentPage = 1;
             var statuses = [];
             var users = [];
@@ -205,8 +205,16 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
 
                         if(data.length > 0)
                         {
-                            if(data.length == 1 && data[0].id_str > mostRecentId)
+                            // Again, a workaround for the fact that id can be different to it's string representation
+                            if(data.length == 1)
+                            {
+                                if(data[0].id_str > mostRecentId)
+                                    log('Fetched ' + data.length + ' tweets');
+                            }
+                            else
+                            {
                                 log('Fetched ' + data.length + ' tweets');
+                            }
 
                             currentPage++;
                             getTweets();

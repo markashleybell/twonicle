@@ -26,12 +26,25 @@ $url = $mysqli->real_escape_string($_POST['user']['url']);
 $extra = ''; //$mysqli->real_escape_string($_POST['user']['favorited']);
 $enabled = $mysqli->real_escape_string($_POST['user']['geo_enabled']);
 
+$rows = 0;
 $sql = "INSERT INTO tweetusers (userid, screenname, realname, location, description, profileimage, url, extra, enabled) VALUES " .
        "(" . $userid . ", '" . $screenname . "', '" . $realname . "', '" . $location . "', '" . $description . "', '" . $profileimage . "', '" . $url . "', '" . $extra . "', " . $enabled . ")";
+
+if ($result = $mysqli->query("select id from tweetusers where userid = " . $userid)) {
+
+    $rows = $result->num_rows;
+    $result->close();
+}
+
+// If we already have data for this user, update it
+if($rows > 0)
+{
+    $sql = "update tweetusers set screenname = '" . $screenname . "', realname = '" . $realname . "', location = '" . $location . "', description = '" . $description . "', profileimage = '" . $profileimage . "', url = '" . $url . "', extra = '" . $extra . "', enabled = " . $enabled . " where userid = " . $userid;
+}
 
 //echo $sql;
 
 $mysqli->query($sql);
 
-echo '{ "success": 1 }';
+echo '{ "success": 1, "new": ' . (($rows > 0) ? 0 : 1) . ' }';
 ?>
