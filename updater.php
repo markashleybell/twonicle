@@ -1,20 +1,18 @@
 <?php
 require('config.php');
 
-// connect to the database
 $mysqli = new mysqli($config['server'], $config['username'], $config['password'], $config['database']);
 
-/* check connection */
 if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());
     exit();
 }
 
-mysqli_report(MYSQLI_REPORT_ERROR);
+// mysqli_report(MYSQLI_REPORT_ERROR);
 
 $mysqli->set_charset("utf8");
 
-// Get the last tweet id we stored, so that we only retrieve new tweets
+// Get the last tweet id stored, so that we only retrieve new tweets
 $since = 100;
 
 if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
@@ -27,8 +25,10 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
 <html>
 	<head>
         <style type="text/css">
+
             #output { margin: 50px; }
-            #output p { margin: 0; padding: 0; }
+            #output p { margin: 0; padding: 0; font-family: "Courier New", Courier, monospace; }
+
         </style>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
         <script type="text/javascript">
@@ -73,6 +73,12 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
                 
                 return false; // Value not found
             }
+
+            function handleAjaxError(request, status, error)
+            {   
+                log(status);
+                log(error);
+            }
             
             function saveStatus()
             {
@@ -98,11 +104,7 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
                             tweetIdStatus.html(s.id_str);
                             saveStatus(); // Save the next tweet
                         },
-                        error: function(request, status, error)
-                        {
-                            log(status);
-                            log(error);
-                        }
+                        error: handleAjaxError
                     });
                 }
                 else
@@ -129,11 +131,7 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
                             log('Saved user data for ' + u.screen_name);
                             saveUser(); // Save the next tweet
                         },
-                        error: function(request, status, error)
-                        {
-                            log(status);
-                            log(error);
-                        }
+                        error: handleAjaxError
                     });
                 }
                 else
@@ -158,19 +156,11 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
                             users.push(data);
                             retrieveUserData();
                         },
-                        error: function(request, status, error)
-                        {
-                            log(status);
-                            log(error);
-                        }
+                        error: handleAjaxError
                     });
-                    
                 }
                 else
                 {
-                    //console.log(statuses);
-                    //console.log(users);
-
                     // Loop through the statuses and users and insert them all into the db
                     saveStatus();
                 }
@@ -185,9 +175,7 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
                     type: 'GET',
                     success: function(data, status, request) { 
                         
-                        var i;
-
-                        for(i = 0; i<data.length; i++)
+                        for(var i = 0; i<data.length; i++)
                         {
                             var item = data[i];
                             var user = item.user;
@@ -211,7 +199,7 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
 
                         if(data.length > 0)
                         {
-                            // Again, a workaround for the fact that id can be different to it's string representation
+                            // Again, a workaround for the fact that id can be different to its string representation
                             if(data.length == 1)
                             {
                                 if(data[0].id_str > mostRecentId)
@@ -229,26 +217,22 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
                         {
                             retrieveUserData(userIds);
                         }
+
                     },
-                    error: function(request, status, error)
-                    {
-                        log(status);
-                        log(error);
-                    }
+                    error: handleAjaxError
                 });
             }
             
             $(function(){
-               
                outputPanel = $('#output');
-               $('#import').bind('click', getTweets);
-               
+               // $('#import').bind('click', getTweets);
+               getTweets();
             });
             
         </script>
 	</head>
 	<body>
-		<p><input type="button" value="IMPORT TWEETS" id="import" /></p>
+		<!-- <p><input type="button" value="IMPORT TWEETS" id="import" /></p> -->
         <div id="output"></div>
 	</body>
 </html>
