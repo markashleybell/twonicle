@@ -31,6 +31,7 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
 
         </style>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+        <script type="text/javascript" src="script/jquery.jsonp-2.1.4.min.js"></script>
         <script type="text/javascript">
             
             var mostRecentId = <?php echo $since; ?>;
@@ -38,6 +39,8 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
             var currentPage = 1;
             var statuses = [];
             var users = [];
+
+            var requestTimeout = 5000;
             
             var outputPanel;
             var tweetIdStatus;
@@ -146,17 +149,19 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
                 {
                     var id = userIds.pop();
                     
-                    $.ajax({
+                    $.jsonp({
                         url: 'http://api.twitter.com/1/users/show.json?callback=?',
                         data: { user_id: id },
-                        dataType: 'jsonp',
-                        type: 'GET',
+                        timeout: requestTimeout,
                         success: function(data, status, request) { 
                             log('Fetched user ' + data.screen_name);
                             users.push(data);
                             retrieveUserData();
                         },
-                        error: handleAjaxError
+                        error: function(opts, status)
+                        {
+                            log('There was an error retrieving the data. Please reload this page to try again.');
+                        }
                     });
                 }
                 else
@@ -168,11 +173,10 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
             
             function getTweets()
             {
-                $.ajax({
+                $.jsonp({
                     url: 'http://api.twitter.com/1/statuses/user_timeline.json?callback=?',
                     data: { screen_name: 'markeebee', include_rts: 1, trim_user: 1, count: 200, since_id: mostRecentId, page: currentPage },
-                    dataType: 'jsonp',
-                    type: 'GET',
+                    timeout: requestTimeout,
                     success: function(data, status, request) { 
                         
                         for(var i = 0; i<data.length; i++)
@@ -219,7 +223,10 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
                         }
 
                     },
-                    error: handleAjaxError
+                    error: function (opts, status)
+                    {   
+                        log('There was an error retrieving the data. Please reload this page to try again.');
+                    }
                 });
             }
             
