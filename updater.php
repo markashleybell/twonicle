@@ -79,8 +79,9 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
 
             function handleAjaxError(request, status, error)
             {   
-                log(status);
-                log(error);
+                log('An error occurred while saving data.');
+                // log(status);
+                // log(error);
             }
             
             function saveStatus()
