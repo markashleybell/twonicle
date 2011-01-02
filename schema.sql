@@ -16,7 +16,7 @@ CREATE TABLE  `twarchive`.`tweets` (
   `pick` tinyint(4) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   FULLTEXT KEY `text` (`text`)
-) ENGINE=MyISAM AUTO_INCREMENT=73 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1750 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `twarchive`.`tweetusers`;
 CREATE TABLE  `twarchive`.`tweetusers` (
@@ -31,4 +31,13 @@ CREATE TABLE  `twarchive`.`tweetusers` (
   `extra` text NOT NULL,
   `enabled` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `twarchive`.`tweetsystem`;
+CREATE TABLE  `twarchive`.`tweetsystem` (
+  `k` varchar(45) NOT NULL,
+  `v` varchar(45) NOT NULL,
+  PRIMARY KEY (`k`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+insert into `twarchive`.`tweetsystem` values ('lastupdated', '1000000000');

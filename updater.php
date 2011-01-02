@@ -79,7 +79,7 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
 
             function handleAjaxError(request, status, error)
             {   
-                log('An error occurred while saving data.');
+                log('An error occurred while saving data');
                 // log(status);
                 // log(error);
             }
@@ -120,6 +120,19 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
                 }
             }
 
+            function updateLastUpdateTime()
+            {
+                $.ajax({
+                    url: 'update_lastupdate.php',
+                    dataType: 'json',
+                    type: 'POST',
+                    success: function(data, status, request) { 
+                        log('Update finished at ' + data.lastupdate);
+                    },
+                    error: handleAjaxError
+                });
+            }
+
             function saveUser()
             {
                 if(users.length > 0)
@@ -141,6 +154,7 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
                 else
                 {
                     log('Finished saving users');
+                    updateLastUpdateTime();
                 }
             }
 
@@ -161,7 +175,7 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
                         },
                         error: function(opts, status)
                         {
-                            log('There was an error retrieving the data. Please reload this page to try again.');
+                            log('There was an error retrieving the data, please reload this page to try again');
                         }
                     });
                 }
@@ -226,7 +240,7 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
                     },
                     error: function (opts, status)
                     {   
-                        log('There was an error retrieving the data. Please reload this page to try again.');
+                        log('There was an error retrieving the data, please reload this page to try again');
                     }
                 });
             }
