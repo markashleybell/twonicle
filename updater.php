@@ -40,7 +40,7 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
             var statuses = [];
             var users = [];
 
-            var requestTimeout = 5000;
+            var requestTimeout = 5000; // Time out Twitter API calls after 5 seconds
             
             var outputPanel;
             var tweetIdStatus;
@@ -83,6 +83,61 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
                 // log(status);
                 // log(error);
             }
+
+            function retrieveStatusData()
+            {
+                $.jsonp({
+                    url: 'http://api.twitter.com/1/statuses/user_timeline.json?callback=?',
+                    data: { screen_name: 'markeebee', include_rts: 1, trim_user: 1, count: 200, since_id: mostRecentId, page: currentPage },
+                    timeout: requestTimeout,
+                    success: function(data, status, request) { 
+                        
+                        for(var i = 0; i<data.length; i++)
+                        {
+                            var item = data[i];
+                            var user = item.user;
+
+                            // For some reason, 'id_str' can actually be slightly different than 'id' for the same tweet(!?!?)
+                            // This means that the since_id parameter of the user_timeline call doesn't tie up with what we have stored
+                            // We need to manually check our max id against the 'id_str' parameter to avoid odd duplicates here and there
+                            if(item.id_str > mostRecentId)
+                            {
+                                if(item.retweeted_status)
+                                    user = item.retweeted_status.user;
+
+                                if(!findUser(userIds, user.id))
+                                {
+                                    addUser(user);
+                                }
+
+                                statuses.push(item);
+                            }
+                        }
+
+                        if(data.length > 0)
+                        {
+                            // Again, a workaround for the fact that id can be different to its string representation
+                            // We only need to test the last element because that's the only one that might be duped
+                            if(data[data.length - 1].id_str > mostRecentId)
+                                log('Fetched ' + data.length + ' tweets');
+                            else
+                                log('Fetched ' + (data.length - 1) + ' tweets');
+
+                            currentPage++;
+                            retrieveStatusData();
+                        }
+                        else
+                        {
+                            retrieveUserData(userIds);
+                        }
+
+                    },
+                    error: function (opts, status)
+                    {   
+                        log('There was an error retrieving the data, please reload this page to try again');
+                    }
+                });
+            }
             
             function saveStatus()
             {
@@ -120,44 +175,6 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
                 }
             }
 
-            function updateLastUpdateTime()
-            {
-                $.ajax({
-                    url: 'update_lastupdate.php',
-                    dataType: 'json',
-                    type: 'POST',
-                    success: function(data, status, request) { 
-                        log('Update finished at ' + data.lastupdate);
-                    },
-                    error: handleAjaxError
-                });
-            }
-
-            function saveUser()
-            {
-                if(users.length > 0)
-                {
-                    var u = users.pop();
-
-                    $.ajax({
-                        url: 'save_user.php',
-                        data: { user: u },
-                        dataType: 'json',
-                        type: 'POST',
-                        success: function(data, status, request) { 
-                            log('Saved user data for ' + u.screen_name);
-                            saveUser(); // Save the next tweet
-                        },
-                        error: handleAjaxError
-                    });
-                }
-                else
-                {
-                    log('Finished saving users');
-                    updateLastUpdateTime();
-                }
-            }
-
             function retrieveUserData()
             {
                 if(userIds.length > 0)
@@ -185,70 +202,51 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
                     saveStatus();
                 }
             }
-            
-            function getTweets()
+
+            function saveUser()
             {
-                $.jsonp({
-                    url: 'http://api.twitter.com/1/statuses/user_timeline.json?callback=?',
-                    data: { screen_name: 'markeebee', include_rts: 1, trim_user: 1, count: 200, since_id: mostRecentId, page: currentPage },
-                    timeout: requestTimeout,
+                if(users.length > 0)
+                {
+                    var u = users.pop();
+
+                    $.ajax({
+                        url: 'save_user.php',
+                        data: { user: u },
+                        dataType: 'json',
+                        type: 'POST',
+                        success: function(data, status, request) { 
+                            log('Saved user data for ' + u.screen_name);
+                            saveUser(); // Save the next tweet
+                        },
+                        error: handleAjaxError
+                    });
+                }
+                else
+                {
+                    log('Finished saving users');
+                    updateLastUpdateTime();
+                }
+            }
+
+            // Store a timestamp so we can tell how long it's been since the archive was updated
+            function updateLastUpdateTime()
+            {
+                $.ajax({
+                    url: 'update_lastupdate.php',
+                    dataType: 'json',
+                    type: 'POST',
                     success: function(data, status, request) { 
-                        
-                        for(var i = 0; i<data.length; i++)
-                        {
-                            var item = data[i];
-                            var user = item.user;
-
-                            // For some reason, 'id_str' can actually be slightly different than 'id' for the same tweet(!?!?)
-                            // This means that the since_id parameter of the user_timeline call doesn't tie up with what we have stored
-                            // We need to manually check our max id against the 'id_str' parameter to avoid odd duplicates here and there
-                            if(item.id_str > mostRecentId)
-                            {
-                                if(item.retweeted_status)
-                                    user = item.retweeted_status.user;
-
-                                if(!findUser(userIds, user.id))
-                                {
-                                    addUser(user);
-                                }
-
-                                statuses.push(item);
-                            }
-                        }
-
-                        if(data.length > 0)
-                        {
-                            // Again, a workaround for the fact that id can be different to its string representation
-                            if(data.length == 1)
-                            {
-                                if(data[0].id_str > mostRecentId)
-                                    log('Fetched ' + data.length + ' tweets');
-                            }
-                            else
-                            {
-                                log('Fetched ' + data.length + ' tweets');
-                            }
-
-                            currentPage++;
-                            getTweets();
-                        }
-                        else
-                        {
-                            retrieveUserData(userIds);
-                        }
-
+                        log('Update finished at ' + data.lastupdate);
+                        log('<a href="../">Return to archive</a>');
                     },
-                    error: function (opts, status)
-                    {   
-                        log('There was an error retrieving the data, please reload this page to try again');
-                    }
+                    error: handleAjaxError
                 });
             }
             
             $(function(){
                outputPanel = $('#output');
                // $('#import').bind('click', getTweets);
-               getTweets();
+               retrieveStatusData();
             });
             
         </script>
