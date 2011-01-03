@@ -3,7 +3,7 @@ require('config.php');
 
 error_reporting(E_ALL);
 
-$mysqli = new mysqli($config['server'], $config['username'], $config['password'], $config['database']);
+$db = new mysqli($config['server'], $config['username'], $config['password'], $config['database']);
 
 if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());
@@ -12,12 +12,12 @@ if (mysqli_connect_errno()) {
 
 // mysqli_report(MYSQLI_REPORT_ERROR);
 
-$mysqli->set_charset("utf8");
+$db->set_charset("utf8");
 
 // Get the last time the archive was updated
 $lastupdate = 1000;
 
-if ($result = $mysqli->query("select v as lastupdate from system where k = 'lastupdated'")) {
+if ($result = $db->query("select v as lastupdate from system where k = 'lastupdated'")) {
     $row = $result->fetch_object();
     if($row->lastupdate) $lastupdate = $row->lastupdate;
     $result->close();
@@ -76,7 +76,7 @@ $sql = "select s.id, s.time, s.text, p.screenname, p.realname, p.profileimage " 
         if($updateneeded)
             echo '<h2 class="warning">Archive has not been updated since ' . date('d/m/y H:i', $lastupdate) . '. <a href="updater.php">Update Now</a>.</h2>';
 
-        if ($result = $mysqli->query($sql, MYSQLI_USE_RESULT)) {
+        if ($result = $db->query($sql, MYSQLI_USE_RESULT)) {
             while ($row = $result->fetch_object()) {
                 echo '<div class="tweet"><img src="' . $row->profileimage . '" /> <div class="details">' .
                      '<span class="username">' . $row->screenname . '</span> <span class="realname">' . $row->realname . '</span><span class="text">' . $row->text . '</span>' . 

@@ -1,7 +1,7 @@
 <?php
 require('config.php');
 
-$mysqli = new mysqli($config['server'], $config['username'], $config['password'], $config['database']);
+$db = new mysqli($config['server'], $config['username'], $config['password'], $config['database']);
 
 if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());
@@ -10,12 +10,12 @@ if (mysqli_connect_errno()) {
 
 // mysqli_report(MYSQLI_REPORT_ERROR);
 
-$mysqli->set_charset("utf8");
+$db->set_charset("utf8");
 
 // Get the last status id stored, so that we only retrieve new tweets
 $since = 100;
 
-if ($result = $mysqli->query("select max(statusid) as since from statuses")) {
+if ($result = $db->query("select max(statusid) as since from statuses")) {
     $row = $result->fetch_object();
     if($row->since) $since = $row->since;
     $result->close();
@@ -39,7 +39,7 @@ if ($result = $mysqli->query("select max(statusid) as since from statuses")) {
         <script type="text/javascript" src="script/jquery.jsonp-2.1.4.min.js"></script>
         <script type="text/javascript">
             
-            var mostRecentId = <?php echo $since; ?>;
+            var mostRecentId = '<?php echo $since; ?>';
             var userIds = [];
             var currentPage = 1;
             var statuses = [];
@@ -82,11 +82,17 @@ if ($result = $mysqli->query("select max(statusid) as since from statuses")) {
                 return false; // Value not found
             }
 
+            // Check if an id is newer than the most recent saved
+            function isIdNew(id)
+            {
+                if(id.length > mostRecentId.length) return true;
+                if(id.length < mostRecentId.length) return false;
+                return (id > mostRecentId);
+            }
+
             function handleAjaxError(request, status, error)
             {   
                 log('An error occurred while saving data');
-                // log(status);
-                // log(error);
             }
 
             function retrieveStatusData()
@@ -105,7 +111,7 @@ if ($result = $mysqli->query("select max(statusid) as since from statuses")) {
                             // For some reason, 'id_str' can actually be slightly different than 'id' for the same tweet(!?!?)
                             // This means that the since_id parameter of the user_timeline call doesn't tie up with what we have stored
                             // We need to manually check our max id against the 'id_str' parameter to avoid odd duplicates here and there
-                            if(item.id_str > mostRecentId)
+                            if(isIdNew(item.id_str))
                             {
                                 if(item.retweeted_status)
                                     user = item.retweeted_status.user;
@@ -123,7 +129,7 @@ if ($result = $mysqli->query("select max(statusid) as since from statuses")) {
                         {
                             // Again, a workaround for the fact that id can be different to its string representation
                             // We only need to test the last element because that's the only one that might be duped
-                            if(data[data.length - 1].id_str > mostRecentId)
+                            if(isIdNew(data[data.length - 1].id_str))
                                 log('Fetched ' + data.length + ' tweets');
                             else
                                 log('Fetched ' + (data.length - 1) + ' tweets');
@@ -249,8 +255,8 @@ if ($result = $mysqli->query("select max(statusid) as since from statuses")) {
             }
             
             $(function(){
-               outputPanel = $('#output');
-               retrieveStatusData();
+                outputPanel = $('#output');
+                retrieveStatusData();
             });
             
         </script>

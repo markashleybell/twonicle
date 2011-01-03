@@ -3,7 +3,7 @@ require('config.php');
 
 error_reporting(E_ALL);
 
-$mysqli = new mysqli($config['server'], $config['username'], $config['password'], $config['database']);
+$db = new mysqli($config['server'], $config['username'], $config['password'], $config['database']);
 
 if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());
@@ -12,27 +12,26 @@ if (mysqli_connect_errno()) {
 
 // mysqli_report(MYSQLI_REPORT_ERROR);
 
-$mysqli->set_charset("utf8");
+$db->set_charset("utf8");
 
-$userid = $mysqli->real_escape_string($_POST['status']['user']['id_str']);
-$statusid = $mysqli->real_escape_string($_POST['status']['id_str']);
-$type = 0; // $_POST['status']['type'] Not quite sure what this was used for?
-$time = strtotime($_POST['status']['created_at']);
-$text = $mysqli->real_escape_string($_POST['status']['text']);
-$source = $mysqli->real_escape_string($_POST['status']['source']);
-$favorite = $mysqli->real_escape_string($_POST['status']['favorited']);
-$extra = ''; // $_POST['status']['extra'] Or this
-$coordinates = $mysqli->real_escape_string($_POST['status']['coordinates']);
-$geo = $mysqli->real_escape_string($_POST['status']['geo']);
-$place = $mysqli->real_escape_string($_POST['status']['place']);
-$contributors = $mysqli->real_escape_string($_POST['status']['contributors']);
+$sql = "INSERT INTO statuses (userid, statusid, time, text, source, favorite, coordinates, geo, place, contributors, pick) VALUES " .
+       "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
 
-$sql = "INSERT INTO statuses (userid, statusid, type, time, text, source, favorite, extra, coordinates, geo, place, contributors, pick) VALUES " .
-       "(" . $userid . ", " . $statusid . ", " . $type . ", " . $time . ", '" . $text . "', '" . $source . "', " . $favorite . ", '" . $extra . "', " . $coordinates . ", " . $geo . ", " . $place. ", " . $contributors . ", 0)";
+$cmd = $db->stmt_init();
+$cmd->prepare($sql);
+$cmd->bind_param("ssississss", $_POST['status']['user']['id_str'],
+                               $_POST['status']['id_str'],
+                               strtotime($_POST['status']['created_at']),
+                               $_POST['status']['text'],
+                               $_POST['status']['source'],
+                               $_POST['status']['favorited'],
+                               $_POST['status']['coordinates'],
+                               $_POST['status']['geo'],
+                               $_POST['status']['created_at'],
+                               $_POST['status']['contributors']);
+$cmd->execute();
 
-//echo $sql;
-
-$mysqli->query($sql);
+$cmd->close();
 
 echo '{ "success": 1 }';
 ?>

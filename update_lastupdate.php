@@ -3,7 +3,7 @@ require('config.php');
 
 error_reporting(E_ALL);
 
-$mysqli = new mysqli($config['server'], $config['username'], $config['password'], $config['database']);
+$db = new mysqli($config['server'], $config['username'], $config['password'], $config['database']);
 
 if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());
@@ -12,11 +12,16 @@ if (mysqli_connect_errno()) {
 
 // mysqli_report(MYSQLI_REPORT_ERROR);
 
-$mysqli->set_charset("utf8");
+$db->set_charset("utf8");
 
-$d = strtotime("now");
+$now = strtotime("now");
 
-$mysqli->query("update system set v = '" . $d . "' where k = 'lastupdated'");
+$cmd = $db->stmt_init();
+$cmd->prepare("update system set v = ? where k = 'lastupdated'");
+$cmd->bind_param("i", $now);
+$cmd->execute();
 
-echo '{ "lastupdate": "' . date('d/m/y H:i', $d) . '" }';
+$cmd->close();
+
+echo '{ "lastupdate": "' . date('d/m/y H:i', $now) . '" }';
 ?>
