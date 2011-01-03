@@ -27,7 +27,7 @@ $geo = $mysqli->real_escape_string($_POST['status']['geo']);
 $place = $mysqli->real_escape_string($_POST['status']['place']);
 $contributors = $mysqli->real_escape_string($_POST['status']['contributors']);
 
-$sql = "INSERT INTO tweets (userid, tweetid, type, time, text, source, favorite, extra, coordinates, geo, place, contributors, pick) VALUES " .
+$sql = "INSERT INTO statuses (userid, tweetid, type, time, text, source, favorite, extra, coordinates, geo, place, contributors, pick) VALUES " .
        "(" . $userid . ", " . $tweetid . ", " . $type . ", " . $time . ", '" . $text . "', '" . $source . "', " . $favorite . ", '" . $extra . "', " . $coordinates . ", " . $geo . ", " . $place. ", " . $contributors . ", 0)";
 
 //echo $sql;

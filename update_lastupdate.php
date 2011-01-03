@@ -16,7 +16,7 @@ $mysqli->set_charset("utf8");
 
 $d = strtotime("now");
 
-$mysqli->query("update tweetsystem set v = '" . $d . "' where k = 'lastupdated'");
+$mysqli->query("update system set v = '" . $d . "' where k = 'lastupdated'");
 
 echo '{ "lastupdate": "' . date('d/m/y H:i', $d) . '" }';
 ?>

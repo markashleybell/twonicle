@@ -1,5 +1,7 @@
-DROP TABLE IF EXISTS `twarchive`.`tweets`;
-CREATE TABLE  `twarchive`.`tweets` (
+CREATE DATABASE twarchive CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `twarchive`.`statuses`;
+CREATE TABLE  `twarchive`.`statuses` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userid` int(10) unsigned NOT NULL,
   `tweetid` bigint(20) unsigned NOT NULL,
@@ -18,8 +20,8 @@ CREATE TABLE  `twarchive`.`tweets` (
   FULLTEXT KEY `text` (`text`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1750 DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `twarchive`.`tweetusers`;
-CREATE TABLE  `twarchive`.`tweetusers` (
+DROP TABLE IF EXISTS `twarchive`.`people`;
+CREATE TABLE  `twarchive`.`people` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userid` int(10) unsigned NOT NULL,
   `screenname` varchar(25) NOT NULL,
@@ -33,11 +35,11 @@ CREATE TABLE  `twarchive`.`tweetusers` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `twarchive`.`tweetsystem`;
-CREATE TABLE  `twarchive`.`tweetsystem` (
+DROP TABLE IF EXISTS `twarchive`.`system`;
+CREATE TABLE  `twarchive`.`system` (
   `k` varchar(45) NOT NULL,
   `v` varchar(45) NOT NULL,
   PRIMARY KEY (`k`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-insert into `twarchive`.`tweetsystem` values ('lastupdated', '1000000000');
+INSERT INTO `twarchive`.`system` VALUES ('lastupdated', '1000000000');

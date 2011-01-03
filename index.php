@@ -17,7 +17,7 @@ $mysqli->set_charset("utf8");
 // Get the last time the archive was updated
 $lastupdate = 1000;
 
-if ($result = $mysqli->query("select v as lastupdate from tweetsystem where k = 'lastupdated'")) {
+if ($result = $mysqli->query("select v as lastupdate from system where k = 'lastupdated'")) {
     $row = $result->fetch_object();
     if($row->lastupdate) $lastupdate = $row->lastupdate;
     $result->close();
@@ -35,10 +35,10 @@ if($hours > $config['update_interval_hours'])
     $updateneeded = true;
 }
 
-$sql = "select t.id, t.time, t.text, u.screenname, u.realname, u.profileimage " .
-       "from tweets as t " .
-       "inner join tweetusers as u " .
-       "on u.userid = t.userid " .
+$sql = "select s.id, s.time, s.text, p.screenname, p.realname, p.profileimage " .
+       "from statuses as s " .
+       "inner join people as p " .
+       "on p.userid = s.userid " .
        "order by time desc limit 200";
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">

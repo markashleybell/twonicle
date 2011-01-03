@@ -25,10 +25,10 @@ $extra = ''; //$mysqli->real_escape_string($_POST['user']['favorited']);
 $enabled = $mysqli->real_escape_string($_POST['user']['geo_enabled']);
 
 $rows = 0;
-$sql = "INSERT INTO tweetusers (userid, screenname, realname, location, description, profileimage, url, extra, enabled) VALUES " .
+$sql = "INSERT INTO people (userid, screenname, realname, location, description, profileimage, url, extra, enabled) VALUES " .
        "(" . $userid . ", '" . $screenname . "', '" . $realname . "', '" . $location . "', '" . $description . "', '" . $profileimage . "', '" . $url . "', '" . $extra . "', " . $enabled . ")";
 
-if ($result = $mysqli->query("select id from tweetusers where userid = " . $userid)) {
+if ($result = $mysqli->query("select id from people where userid = " . $userid)) {
 
     $rows = $result->num_rows;
     $result->close();
@@ -37,7 +37,7 @@ if ($result = $mysqli->query("select id from tweetusers where userid = " . $user
 // If we already have data for this user, update it
 if($rows > 0)
 {
-    $sql = "update tweetusers set screenname = '" . $screenname . "', realname = '" . $realname . "', location = '" . $location . "', description = '" . $description . "', profileimage = '" . $profileimage . "', url = '" . $url . "', extra = '" . $extra . "', enabled = " . $enabled . " where userid = " . $userid;
+    $sql = "update people set screenname = '" . $screenname . "', realname = '" . $realname . "', location = '" . $location . "', description = '" . $description . "', profileimage = '" . $profileimage . "', url = '" . $url . "', extra = '" . $extra . "', enabled = " . $enabled . " where userid = " . $userid;
 }
 
 //echo $sql;
