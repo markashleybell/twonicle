@@ -15,7 +15,7 @@ if (mysqli_connect_errno()) {
 $mysqli->set_charset("utf8");
 
 $userid = $mysqli->real_escape_string($_POST['status']['user']['id_str']);
-$tweetid = $mysqli->real_escape_string($_POST['status']['id_str']);
+$statusid = $mysqli->real_escape_string($_POST['status']['id_str']);
 $type = 0; // $_POST['status']['type'] Not quite sure what this was used for?
 $time = strtotime($_POST['status']['created_at']);
 $text = $mysqli->real_escape_string($_POST['status']['text']);
@@ -27,8 +27,8 @@ $geo = $mysqli->real_escape_string($_POST['status']['geo']);
 $place = $mysqli->real_escape_string($_POST['status']['place']);
 $contributors = $mysqli->real_escape_string($_POST['status']['contributors']);
 
-$sql = "INSERT INTO statuses (userid, tweetid, type, time, text, source, favorite, extra, coordinates, geo, place, contributors, pick) VALUES " .
-       "(" . $userid . ", " . $tweetid . ", " . $type . ", " . $time . ", '" . $text . "', '" . $source . "', " . $favorite . ", '" . $extra . "', " . $coordinates . ", " . $geo . ", " . $place. ", " . $contributors . ", 0)";
+$sql = "INSERT INTO statuses (userid, statusid, type, time, text, source, favorite, extra, coordinates, geo, place, contributors, pick) VALUES " .
+       "(" . $userid . ", " . $statusid . ", " . $type . ", " . $time . ", '" . $text . "', '" . $source . "', " . $favorite . ", '" . $extra . "', " . $coordinates . ", " . $geo . ", " . $place. ", " . $contributors . ", 0)";
 
 //echo $sql;
 

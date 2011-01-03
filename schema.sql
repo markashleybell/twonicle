@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS `twarchive`.`statuses`;
 CREATE TABLE  `twarchive`.`statuses` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userid` int(10) unsigned NOT NULL,
-  `tweetid` bigint(20) unsigned NOT NULL,
+  `statusid` bigint(20) unsigned NOT NULL,
   `type` tinyint(4) NOT NULL DEFAULT '0',
   `time` int(10) unsigned NOT NULL,
   `text` varchar(255) NOT NULL,

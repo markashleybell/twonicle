@@ -12,10 +12,10 @@ if (mysqli_connect_errno()) {
 
 $mysqli->set_charset("utf8");
 
-// Get the last tweet id stored, so that we only retrieve new tweets
+// Get the last status id stored, so that we only retrieve new tweets
 $since = 100;
 
-if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
+if ($result = $mysqli->query("select max(statusid) as since from statuses")) {
     $row = $result->fetch_object();
     if($row->since) $since = $row->since;
     $result->close();
@@ -25,9 +25,14 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
 <html>
 	<head>
         <style type="text/css">
+            
+            body, h1, h2, h3, h4, p, ul, ol, li, form { margin: 0; padding: 0; }
+            body { font-family: Arial, Helvetica, sans-serif; font-size: 12px; margin: 50px; }
 
-            #output { margin: 50px; }
-            #output p { margin: 0; padding: 0; font-family: "Courier New", Courier, monospace; }
+            h1 { margin: 50px 50px 0 50px; }
+
+            #output { margin: 50px; padding: 15px; background: #e0e0e0; border: solid 1px #999; height: 300px; overflow: auto; }
+            #output p { margin: 0; padding: 0; font-family: "Courier New", Courier, monospace; font-size: 14px; }
 
         </style>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
@@ -245,14 +250,15 @@ if ($result = $mysqli->query("select max(tweetid) as since from tweets")) {
             
             $(function(){
                outputPanel = $('#output');
-               // $('#import').bind('click', getTweets);
                retrieveStatusData();
             });
             
         </script>
 	</head>
 	<body>
-		<!-- <p><input type="button" value="IMPORT TWEETS" id="import" /></p> -->
-        <div id="output"></div>
+        <h1>Updating Archive</h1>
+        <div id="output">
+            <p>Fetching tweets...</p>
+        </div>
 	</body>
 </html>
