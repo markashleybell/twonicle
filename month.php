@@ -35,11 +35,34 @@ if($hours > $config['update_interval_hours'])
     $updateneeded = true;
 }
 
+$diff = 0;
+
+// Getting database time offset
+if ($result = $db->query("SELECT TIME_FORMAT(NOW() - UTC_TIMESTAMP(), '%H%i') AS 'diff'")) {
+    $row = $result->fetch_object();
+    if($row->diff) $diff = $row->diff;
+    $result->close();
+}
+	
+$dbOffset          = date("Z") - ($diff * 36); if(!is_numeric($dbOffset)){ $dbOffset = 0; }
+$dbOffset          = $dbOffset >= 0 ? "+" . $dbOffset : $dbOffset; // Explicit positivity/negativity
+
 $sql = "select s.id, s.time, s.text, p.screenname, p.realname, p.profileimage " .
        "from statuses as s " .
        "inner join people as p " .
        "on p.userid = s.userid " .
-       "order by time desc limit 200";
+       "where YEAR(FROM_UNIXTIME(time)) = ? AND MONTH(FROM_UNIXTIME(time)) = ? " . 
+       "order by time desc";
+
+$cmd = $db->stmt_init();
+$cmd->prepare($sql);
+$cmd->bind_param("ii", $_GET['y'],
+                       $_GET['m']);
+$cmd->execute();
+
+$cmd->bind_result($_id, $_time, $_text, $_screenname, $_realname, $_profileimage);
+
+//$cmd->store_result();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
@@ -60,14 +83,12 @@ $sql = "select s.id, s.time, s.text, p.screenname, p.realname, p.profileimage " 
         if($updateneeded)
             echo '<h2 class="warning">Archive has not been updated since ' . date('d/m/y H:i', $lastupdate) . '. <a href="updater.php">Update Now</a>.</h2>';
 
-        if ($result = $db->query($sql, MYSQLI_USE_RESULT)) {
-            while ($row = $result->fetch_object()) {
-                echo '<div class="tweet"><img src="' . $row->profileimage . '" /> <div class="details">' .
-                     '<span class="username">' . $row->screenname . '</span> <span class="realname">' . $row->realname . '</span><span class="text">' . $row->text . '</span>' . 
-                     '<span class="date">' . date('d/m/y H:i', $row->time) . '</span></div></div>';
-            }
-            $result->close();
+        while ($row = $cmd->fetch()) {
+            echo '<div class="tweet"><img src="' . $_profileimage . '" /> <div class="details">' .
+                 '<span class="username">' . $_screenname . '</span> <span class="realname">' . $_realname . '</span><span class="text">' . $_text . '</span>' . 
+                 '<span class="date">' . date('d/m/y H:i', $_time) . '</span></div></div>';
         }
+        $cmd->close();
         ?>
 	</body>
 </html>

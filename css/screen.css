@@ -1,0 +1,13 @@
+body, h1, h2, h3, h4, p, ul, ol, li, form { margin: 0; padding: 0; }
+body { font-family: Arial, Helvetica, sans-serif; font-size: 12px; margin: 50px; }
+
+.tweet { width: 600px; overflow: auto; margin: 20px 0 0 0; }
+.tweet img { float: left; }
+.tweet span { display: block; }
+.details { width: 542px; float: right; }
+.username { float: left; font-size: 16px; font-weight: bold; margin-right: 10px; }
+.realname { float: left; font-size: 16px; color: #999; }
+.text { font-size: 18px; clear: left; }
+.date { font-size: 11px; color: #999; }
+
+.warning, .warning a { color: #cc0000; }

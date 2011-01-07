@@ -1,7 +1,7 @@
-CREATE DATABASE twarchive CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+CREATE DATABASE twonicle CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
-DROP TABLE IF EXISTS `twarchive`.`statuses`;
-CREATE TABLE  `twarchive`.`statuses` (
+DROP TABLE IF EXISTS `twonicle`.`statuses`;
+CREATE TABLE  `twonicle`.`statuses` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userid` int(10) unsigned NOT NULL,
   `statusid` bigint(20) unsigned NOT NULL,
@@ -20,8 +20,8 @@ CREATE TABLE  `twarchive`.`statuses` (
   FULLTEXT KEY `text` (`text`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1750 DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `twarchive`.`people`;
-CREATE TABLE  `twarchive`.`people` (
+DROP TABLE IF EXISTS `twonicle`.`people`;
+CREATE TABLE  `twonicle`.`people` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userid` int(10) unsigned NOT NULL,
   `screenname` varchar(25) NOT NULL,
@@ -35,11 +35,11 @@ CREATE TABLE  `twarchive`.`people` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `twarchive`.`system`;
-CREATE TABLE  `twarchive`.`system` (
+DROP TABLE IF EXISTS `twonicle`.`system`;
+CREATE TABLE  `twonicle`.`system` (
   `k` varchar(45) NOT NULL,
   `v` varchar(45) NOT NULL,
   PRIMARY KEY (`k`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-INSERT INTO `twarchive`.`system` VALUES ('lastupdated', '1000000000');
+INSERT INTO `twonicle`.`system` VALUES ('lastupdated', '1000000000');
