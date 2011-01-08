@@ -1,5 +1,5 @@
 <?php
-require('config.php');
+require('config/config.php');
 
 $db = new mysqli($config['server'], $config['username'], $config['password'], $config['database']);
 
@@ -24,17 +24,7 @@ if ($result = $db->query("select max(statusid) as since from statuses")) {
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 	<head>
-        <style type="text/css">
-            
-            body, h1, h2, h3, h4, p, ul, ol, li, form { margin: 0; padding: 0; }
-            body { font-family: Arial, Helvetica, sans-serif; font-size: 12px; margin: 50px; }
-
-            h1 { margin: 50px 50px 0 50px; }
-
-            #output { margin: 50px; padding: 15px; background: #e0e0e0; border: solid 1px #999; height: 300px; overflow: auto; }
-            #output p { margin: 0; padding: 0; font-family: "Courier New", Courier, monospace; font-size: 14px; }
-
-        </style>
+        <link rel="stylesheet" type="text/css" href="css/updater.css" />
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
         <script type="text/javascript" src="script/jquery.jsonp-2.1.4.min.js"></script>
         <script type="text/javascript">
@@ -262,7 +252,7 @@ if ($result = $db->query("select max(statusid) as since from statuses")) {
         </script>
 	</head>
 	<body>
-        <h1>Updating Archive</h1>
+        <h1>Updating Tweet Archive</h1>
         <div id="output">
             <p>Fetching tweets...</p>
         </div>

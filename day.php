@@ -51,13 +51,14 @@ $sql = "select s.id, s.time, s.text, p.screenname, p.realname, p.profileimage " 
        "from statuses as s " .
        "inner join people as p " .
        "on p.userid = s.userid " .
-       "where YEAR(FROM_UNIXTIME(time)) = ? AND MONTH(FROM_UNIXTIME(time)) = ? " . 
+       "where YEAR(FROM_UNIXTIME(time)) = ? AND MONTH(FROM_UNIXTIME(time)) = ? AND DAY(FROM_UNIXTIME(time)) = ? " . 
        "order by time desc";
 
 $cmd = $db->stmt_init();
 $cmd->prepare($sql);
-$cmd->bind_param("ii", $_GET['y'],
-                       $_GET['m']);
+$cmd->bind_param("iii", $_GET['y'],
+                       $_GET['m'],
+                       $_GET['d']);
 $cmd->execute();
 
 $cmd->bind_result($_id, $_time, $_text, $_screenname, $_realname, $_profileimage);
