@@ -43,3 +43,4 @@ CREATE TABLE  `twonicle`.`system` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 INSERT INTO `twonicle`.`system` VALUES ('lastupdated', '1000000000');
+INSERT INTO `twonicle`.`system` VALUES ('processing', '0');

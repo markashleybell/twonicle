@@ -20,8 +20,9 @@ $cmd = $db->stmt_init();
 $cmd->prepare("update system set v = ? where k = 'lastupdated'");
 $cmd->bind_param("i", $now);
 $cmd->execute();
-
 $cmd->close();
+
+$db->query("update system set v = 0 where k = 'processing'");
 
 echo '{ "lastupdate": "' . date('d/m/y H:i', $now) . '" }';
 ?>
