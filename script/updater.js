@@ -206,7 +206,7 @@ function updateLastUpdateTime()
         type: 'POST',
         success: function(data, status, request) { 
             log('Update finished at ' + data.lastupdate);
-            log('<a href="../">Return to archive</a>');
+            log('<a href="./">Return to archive</a>');
         },
         error: handleAjaxError
     });

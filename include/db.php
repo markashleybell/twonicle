@@ -44,13 +44,71 @@ class DB
 
     public function getRecentTweets()
     {
-        $_sql = "select s.id, s.time, s.text, p.screenname, p.realname, p.profileimage " .
+        $sql = "select s.id, s.time, s.text, p.screenname, p.realname, p.profileimage " .
                "from statuses as s " .
                "inner join people as p " .
                "on p.userid = s.userid " .
-               "order by time desc limit 200";
+               "order by time desc limit 100";
 
-        return $this->_db->query($_sql, MYSQLI_USE_RESULT);
+        $cmd = $this->_db->stmt_init();
+        $cmd->prepare($sql);
+        $cmd->execute();
+
+        $cmd->bind_result($_id, $_time, $_text, $_screenname, $_realname, $_profileimage);
+
+        $result = array();
+
+        while ($row = $cmd->fetch()) {
+
+            $s = new Status();
+            
+            $s->id = $_id;
+            $s->time = $_time;
+            $s->text = $_text;
+            $s->screenname = $_screenname;
+            $s->realname = $_realname; 
+            $s->profileimage = $_profileimage;
+
+            $result[] = $s;
+        }
+
+        $cmd->close();
+        
+        return $result;
+    }
+    
+    public function getYearNavigation($y)
+    {
+        $months = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+        
+        $sql = "select MONTH(FROM_UNIXTIME(time)) as month, count(id) as count from statuses " .
+               "where YEAR(FROM_UNIXTIME(time)) = ? " . 
+               "group by MONTH(FROM_UNIXTIME(time)) " .
+               "order by MONTH(FROM_UNIXTIME(time))";
+
+        $cmd = $this->_db->stmt_init();
+        $cmd->prepare($sql);
+        $cmd->bind_param("i", $y);
+        $cmd->execute();
+
+        $cmd->bind_result($_month, $_count);
+        
+        $result = array();
+
+        while ($row = $cmd->fetch()) {
+            
+            $m = new Month();
+            
+            $m->number = $_month;
+            $m->name = $months[($_month - 1)];
+            $m->count = $_count;
+            
+            $result[] = $m;
+        }
+
+        $cmd->close();
+
+        return $result;
     }
 
     public function getTweetsByMonth($y, $m)
