@@ -9,7 +9,7 @@ $db = new DB($config['server'], $config['username'], $config['password'], $confi
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 	<head>
-        <link rel="stylesheet" type="text/css" href="css/screen.css" />
+        <link rel="stylesheet" type="text/css" href="<?php echo $config['app_base_path']; ?>/css/screen.css" />
 		<script src="http://platform.twitter.com/anywhere.js?id=<?php echo $config['anywhere_api_key']; ?>&amp;v=1"></script>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
         <script type="text/javascript">
@@ -24,7 +24,7 @@ $db = new DB($config['server'], $config['username'], $config['password'], $confi
         <div id="tweets">
             <?php
             if($db->needsUpdate($config['update_interval_hours']))
-                echo '<h2 class="warning">Archive has not been updated for more than ' . $config['update_interval_hours'] . ' hours. <a href="updater.php">Update Now</a>.</h2>';
+                echo '<h2 class="warning">Archive has not been updated for more than ' . $config['update_interval_hours'] . ' hours. <a href="'. $config['app_base_path'] . '/update">Update Now</a>.</h2>';
     
             $result = $db->getRecentTweets();
 
@@ -36,17 +36,7 @@ $db = new DB($config['server'], $config['username'], $config['password'], $confi
             ?>
         </div>
         <div id="navigation">
-            <ul id="year-navigation">
-                <?php
-                $year = 2010;
-                
-                $result = $db->getYearNavigation($year);
-                
-                foreach ($result as $month) {
-                    echo '<li><a href="' . $year . '/' . $month->number . '"><span>' . $month->name . ' (' . $month->count . ')</span></a></li>';
-                }
-                ?>
-            </ul>
+            <?php require('include/year_navigation.php'); ?>
         </div>
 	</body>
 </html>

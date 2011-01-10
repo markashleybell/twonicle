@@ -62,7 +62,8 @@ if ($result = $db->query("select max(statusid) as since from statuses")) {
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
         <script type="text/javascript" src="script/jquery.jsonp-2.1.4.min.js"></script>
         <script type="text/javascript">
-            var mostRecentId = '<?php echo $since; ?>';            
+            var mostRecentId = '<?php echo $since; ?>';
+			var appBaseUrl = '<?php echo $config['app_base_path']; ?>';
         </script>
         <script type="text/javascript" src="script/updater.js"></script>
 	</head>

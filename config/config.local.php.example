@@ -1,0 +1,10 @@
+<?php
+
+$local_config['anywhere_api_key'] = 'youranywhereapikey';
+
+$local_config['server'] = 'yourservername';
+$local_config['database'] = 'yourdatabasename';
+$local_config['username'] = 'yourusername';
+$local_config['password'] = 'yourpassword';
+
+?>
