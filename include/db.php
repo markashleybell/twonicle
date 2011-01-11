@@ -1,5 +1,7 @@
 <?php
 
+require('linkify.php');
+
 class DB
 {
     private $_db = null;
@@ -64,7 +66,7 @@ class DB
             
             $s->id = $_id;
             $s->time = $_time;
-            $s->text = $_text;
+            $s->text = linkify($_text);
             $s->screenname = $_screenname;
             $s->realname = $_realname; 
             $s->profileimage = $_profileimage;
@@ -135,7 +137,7 @@ class DB
             
             $s->id = $_id;
             $s->time = $_time;
-            $s->text = $_text;
+            $s->text = linkify($_text);
             $s->screenname = $_screenname;
             $s->realname = $_realname; 
             $s->profileimage = $_profileimage;
@@ -172,7 +174,7 @@ class DB
             
             $s->id = $_id;
             $s->time = $_time;
-            $s->text = $_text;
+            $s->text = linkify($_text);
             $s->screenname = $_screenname;
             $s->realname = $_realname; 
             $s->profileimage = $_profileimage;
