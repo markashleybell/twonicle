@@ -79,28 +79,32 @@ class DB
         return $result;
     }
     
-    public function getYearNavigation($y)
+    public function getYearNavigation($y, $all)
     {
         $months = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
-        
-        $sql = "select MONTH(FROM_UNIXTIME(time)) as month, count(id) as count from statuses " .
-               "where YEAR(FROM_UNIXTIME(time)) = ? " . 
-               "group by MONTH(FROM_UNIXTIME(time)) " .
-               "order by MONTH(FROM_UNIXTIME(time))";
+
+        $where = ($all) ? "" : "where YEAR(FROM_UNIXTIME(time)) = ? ";
+
+    	$sql = "select MONTH(FROM_UNIXTIME(time)) as month, YEAR(FROM_UNIXTIME(time)) as year, count(id) as count from statuses " . $where .
+	           "group by YEAR(FROM_UNIXTIME(time)), MONTH(FROM_UNIXTIME(time)) " . 
+	           "order by YEAR(FROM_UNIXTIME(time)) desc, MONTH(FROM_UNIXTIME(time)) desc;";
 
         $cmd = $this->_db->stmt_init();
         $cmd->prepare($sql);
-        $cmd->bind_param("i", $y);
-        $cmd->execute();
 
-        $cmd->bind_result($_month, $_count);
+        if(!$all)
+            $cmd->bind_param("i", $y);
+
+        $cmd->execute();
+	
+        $cmd->bind_result($_month, $_year, $_count);
         
         $result = array();
 
         while ($row = $cmd->fetch()) {
             
             $m = new Month();
-            
+            $m->year = $_year;            
             $m->number = $_month;
             $m->name = $months[($_month - 1)];
             $m->count = $_count;

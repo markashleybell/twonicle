@@ -21,22 +21,27 @@ $db = new DB($config['server'], $config['username'], $config['password'], $confi
         </script>
 	</head>
 	<body>
-		<div id="tweets">
-			<?php
-	        if($db->needsUpdate($config['update_interval_hours']))
-	            echo '<h2 class="warning">Archive has not been updated for more than ' . $config['update_interval_hours'] . ' hours. <a href="'. $config['app_base_path'] . '/update">Update Now</a>.</h2>';
+        <?php require('include/head.php'); ?>
+        <div id="container">
+            <div id="navigation">
+                <?php require('include/year_navigation.php'); ?>
+            </div>
+            <div id="tweets">
+                <?php
+                if($db->needsUpdate($config['update_interval_hours']))
+                    echo '<h2 class="warning">Archive has not been updated for more than ' . $config['update_interval_hours'] . ' hours. <a href="'. $config['app_base_path'] . '/update">Update Now</a>.</h2>';
+        
+                $result = $db->getTweetsByMonth($_GET['y'], $_GET['m']);
 
-	        $result = $db->getTweetsByMonth($_GET['y'], $_GET['m']);
-
-	        foreach ($result as $status) {
-	            echo '<div class="tweet"><img src="' . $status->profileimage . '" /> <div class="details">' .
-	                 '<span class="username">' . $status->screenname . '</span> <span class="realname">' . $status->realname . '</span><span class="text">' . $status->text . '</span>' . 
-	                 '<span class="date">' . date('d/m/y H:i', $status->time) . '</span></div></div>';
-	        }
-	        ?>
+                foreach ($result as $status) {
+                    echo '<div class="tweet"><img src="' . $status->profileimage . '" /> <div class="details">' .
+                         '<span class="username">' . $status->screenname . '</span> <span class="realname">' . $status->realname . '</span><span class="text">' . $status->text . '</span>' . 
+                         '<span class="date">' . date('d/m/y H:i', $status->time) . '</span></div></div>';
+                }
+                ?>
+            </div>
+            
         </div>
-        <div id="navigation">
-            <?php require('include/year_navigation.php'); ?>
-        </div>
+        <?php require('include/foot.php'); ?>     
 	</body>
 </html>
