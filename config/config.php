@@ -10,6 +10,6 @@ $config['password'] = $local_config['password'];
 
 $config['update_interval_hours'] = 2;
 
-$config['app_base_path'] = '/twonicle';
+$config['app_base_path'] = $local_config['app_base_path'];
 
 ?>
