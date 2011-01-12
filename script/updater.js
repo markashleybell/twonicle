@@ -102,8 +102,18 @@ function retrieveStatusData()
 
         },
         error: function (opts, status)
-        {   
-            log('There was an error retrieving the data, please reload this page to try again');
+        {      
+            // If we got here, there's been an error retrieving the API feed; we need to reset the
+            // processing flag so the update can be re-run         
+            $.ajax({
+                url: 'reset_processing_flag.php',
+                dataType: 'json',
+                type: 'POST',
+                success: function(data, status, request) { 
+                    log('There was an error retrieving the data, please reload this page to try again');
+                },
+                error: handleAjaxError
+            });
         }
     });
 }
