@@ -29,7 +29,7 @@ $db = new DB($config['server'], $config['username'], $config['password'], $confi
             <div id="tweets">
                 <?php
                 if($db->needsUpdate($config['update_interval_hours']))
-                    echo '<h2 class="warning">Archive has not been updated for more than ' . $config['update_interval_hours'] . ' hours. <a href="'. $config['app_base_path'] . '/update">Update Now</a>.</h2>';
+                    echo '<h2 class="warning">Archive has not been updated for more than ' . $config['update_interval_hours'] . ' hours. <a href="'. $config['app_base_path'] . 'update">Update Now</a>.</h2>';
         
                 $result = $db->getRecentTweets();
 
