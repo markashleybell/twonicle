@@ -14,13 +14,13 @@ $now = strtotime("now");
 
 // Store the last updated date in the database
 $cmd = $db->stmt_init();
-$cmd->prepare("update system set v = ? where k = 'lastupdated'");
+$cmd->prepare("update " . $config['table_prefix'] . "system set v = ? where k = 'lastupdated'");
 $cmd->bind_param("i", $now);
 $cmd->execute();
 $cmd->close();
 
 // Reset the flag so that other updates can be performed
-$db->query("update system set v = 0 where k = 'processing'");
+$db->query("update " . $config['table_prefix'] . "system set v = 0 where k = 'processing'");
 
 echo '{ "lastupdate": "' . date('d/m/y H:i', $now) . '" }';
 ?>

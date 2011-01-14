@@ -1,5 +1,3 @@
-CREATE DATABASE twonicle CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-
 DROP TABLE IF EXISTS `twonicle`.`statuses`;
 CREATE TABLE  `twonicle`.`statuses` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

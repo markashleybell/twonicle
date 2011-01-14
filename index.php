@@ -4,7 +4,7 @@ require('include/status.php');
 require('include/month.php');
 require('include/db.php');
 
-$db = new DB($config['server'], $config['username'], $config['password'], $config['database']);
+$db = new DB($config['server'], $config['username'], $config['password'], $config['database'], $config['table_prefix']);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>

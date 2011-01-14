@@ -6,6 +6,7 @@ if(isset($_POST['server']))
     $password = $_POST['password'];
     $dbname = $_POST['dbname'];
     $basepath = $_POST['basepath'];
+    $tableprefix = $_POST['tableprefix'];
 
     $db = new mysqli($server, $username, $password);
 
@@ -13,12 +14,21 @@ if(isset($_POST['server']))
         printf("Connect failed: %s\n", mysqli_connect_error());
         exit();
     }
-
+    
     $db->set_charset("utf8");
+    
+    $db_check = $db->select_db($dbname);
+    
+    if (!$db_check) {
+        $db->query('CREATE DATABASE ' . $dbname . ' CHARACTER SET utf8 COLLATE utf8_unicode_ci');
+    }  
 
     // Load the schema and replace all instances of db name with specified name
     $sql = file_get_contents("schema.sql");
     $sql = preg_replace('/twonicle/', $dbname, $sql);
+    $sql = preg_replace('/people/', $tableprefix . 'people', $sql);
+    $sql = preg_replace('/system/', $tableprefix . 'system', $sql);
+    $sql = preg_replace('/statuses/', $tableprefix . 'statuses', $sql);
 
     $db->multi_query($sql);
 
@@ -33,6 +43,8 @@ if(isset($_POST['server']))
 \$local_config['password'] = '$password';
 
 \$local_config['app_base_path'] = '$basepath';
+
+\$local_config['table_prefix'] = '$tableprefix';
 ?>
 CONFIG;
 
@@ -47,18 +59,49 @@ CONFIG;
     } else {
     	// Return file find error
     }
+    header( 'Location: setup/complete' ) ;
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 	<head>
-        <link rel="stylesheet" type="text/css" href="../css/updater.css" />
+        <link rel="stylesheet" type="text/css" href="./css/updater.css" />
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+        <script type="text/javascript">
+            
+            function checkIfDatabaseExists(name)
+            {
+                $.ajax({
+                    url: 'setup/check_db',
+                    data: $('#setup-form').serialize(),
+                    dataType: 'json',
+                    type: 'POST',
+                    success: function(data, status, request) { 
+                        
+                        if(data.exists)
+                            $('#dbname').after('<br /><span>WARNING: The specified database already exists. If any tables in the existing database have the same names as those being created they will be dropped and all data in them will be lost!</span>');
+                        
+                    },
+                    error: function(request, status, error) {
+                        
+                        // TODO: Handle conn error
+                        
+                    }
+                });
+            }
+            
+            $(function(){
+                
+                $('#dbname').bind('blur', function() { checkIfDatabaseExists($(this).val()); });
+                
+            });
+            
+        </script>
 	</head>
 	<body>
         <h1>Setup</h1>
         <div id="output">
-            <form action="setup.php" method="post">
+            <form action="setup" method="post" id="setup-form">
                 <p><label for="server">Database Server</label>
                 <input type="text" id="server" name="server" value="localhost" /></p>
                 <p><label for="username">Database User Name</label>
@@ -67,6 +110,8 @@ CONFIG;
                 <input type="text" id="password" name="password" value="twonicle" /></p>
                 <p><label for="dbname">Database Name</label>
                 <input type="text" id="dbname" name="dbname" value="twonicle" /></p>
+                <p><label for="tableprefix">Twonicle Table Prefix</label>
+                <input type="text" id="tableprefix" name="tableprefix" value="twonicle_" /></p>
                 <p><label for="basepath">App Base Path</label>
                 <input type="text" id="basepath" name="basepath" value="/" /></p>
                 <p><input type="submit" value="Set Up Now" /></p>

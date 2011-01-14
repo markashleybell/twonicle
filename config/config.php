@@ -12,4 +12,6 @@ $config['update_interval_hours'] = 2;
 
 $config['app_base_path'] = $local_config['app_base_path'];
 
+$config['table_prefix'] = $local_config['table_prefix'];
+
 ?>

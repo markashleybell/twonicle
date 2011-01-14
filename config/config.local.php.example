@@ -9,4 +9,6 @@ $local_config['password'] = 'yourpassword';
 
 $local_config['app_base_path'] = '/';
 
+$local_config['table_prefix'] = 'twonicle_';
+
 ?>

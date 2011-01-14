@@ -5,8 +5,9 @@ require('linkify.php');
 class DB
 {
     private $_db = null;
+    private $_prefix = "";
 
-    public function __construct($server, $username, $password, $database)
+    public function __construct($server, $username, $password, $database, $tableprefix)
     {
         $this->_db = new mysqli($server, $username, $password, $database);		
 
@@ -16,6 +17,8 @@ class DB
         }
 
         $this->_db->set_charset("utf8");
+        
+        $this->_prefix = $tableprefix;
 	}
 
     public function needsUpdate($hours)
@@ -23,7 +26,7 @@ class DB
         // Get the last time the archive was updated
         $_lastupdate = 1000;
 
-        if ($_result = $this->_db->query("select v as lastupdate from system where k = 'lastupdated'")) {
+        if ($_result = $this->_db->query("select v as lastupdate from " . $this->_prefix . "system where k = 'lastupdated'")) {
             $_row = $_result->fetch_object();
             if($_row->lastupdate) $_lastupdate = $_row->lastupdate;
             $_result->close();
@@ -47,8 +50,8 @@ class DB
     public function getRecentTweets()
     {
         $sql = "select s.id, s.time, s.text, p.screenname, p.realname, p.profileimage " .
-               "from statuses as s " .
-               "inner join people as p " .
+               "from " . $this->_prefix . "statuses as s " .
+               "inner join " . $this->_prefix . "people as p " .
                "on p.userid = s.userid " .
                "order by time desc limit 100";
 
@@ -85,7 +88,7 @@ class DB
 
         $where = ($all) ? "" : "where YEAR(FROM_UNIXTIME(time)) = ? ";
 
-    	$sql = "select MONTH(FROM_UNIXTIME(time)) as month, YEAR(FROM_UNIXTIME(time)) as year, count(id) as count from statuses " . $where .
+    	$sql = "select MONTH(FROM_UNIXTIME(time)) as month, YEAR(FROM_UNIXTIME(time)) as year, count(id) as count from " . $this->_prefix . "statuses " . $where .
 	           "group by YEAR(FROM_UNIXTIME(time)), MONTH(FROM_UNIXTIME(time)) " . 
 	           "order by YEAR(FROM_UNIXTIME(time)) desc, MONTH(FROM_UNIXTIME(time)) desc;";
 
@@ -120,8 +123,8 @@ class DB
     public function getTweetsByMonth($y, $m)
     {
         $sql = "select s.id, s.time, s.text, p.screenname, p.realname, p.profileimage " .
-               "from statuses as s " .
-               "inner join people as p " .
+               "from " . $this->_prefix . "statuses as s " .
+               "inner join " . $this->_prefix . "people as p " .
                "on p.userid = s.userid " .
                "where YEAR(FROM_UNIXTIME(time)) = ? AND MONTH(FROM_UNIXTIME(time)) = ? " . 
                "order by time desc";
@@ -157,8 +160,8 @@ class DB
     public function getTweetsByDay($y, $m, $d)
     {
         $sql = "select s.id, s.time, s.text, p.screenname, p.realname, p.profileimage " .
-               "from statuses as s " .
-               "inner join people as p " .
+               "from " . $this->_prefix . "statuses as s " .
+               "inner join " . $this->_prefix . "people as p " .
                "on p.userid = s.userid " .
                "where YEAR(FROM_UNIXTIME(time)) = ? AND MONTH(FROM_UNIXTIME(time)) = ? AND DAY(FROM_UNIXTIME(time)) = ? " . 
                "order by time desc";

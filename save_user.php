@@ -14,14 +14,14 @@ if (mysqli_connect_errno()) {
 
 $db->set_charset("utf8");
 
-$sql = "INSERT INTO people (screenname, realname, location, description, profileimage, url, enabled, userid) VALUES " .
+$sql = "INSERT INTO " . $config['table_prefix'] . "people (screenname, realname, location, description, profileimage, url, enabled, userid) VALUES " .
        "(?, ?, ?, ?, ?, ?, ?, ?)";
 
 $userid = $_POST['user']['id_str'];
 $isnew = true;
 
 $check = $db->stmt_init();
-$check->prepare("select id from people where userid = ?");
+$check->prepare("select id from " . $config['table_prefix'] . "people where userid = ?");
 $check->bind_param("i", $userid);
 $check->execute();
 $check->store_result();
@@ -29,7 +29,7 @@ $check->store_result();
 // If we already have data for this user, just update it
 if($check->num_rows > 0)
 {
-    $sql = "UPDATE people set screenname = ?, realname = ?, location = ?, description = ?, profileimage = ?, url = ?, enabled = ? where userid = ?";
+    $sql = "UPDATE " . $config['table_prefix'] . "people set screenname = ?, realname = ?, location = ?, description = ?, profileimage = ?, url = ?, enabled = ? where userid = ?";
     $isnew = false;
 }
 

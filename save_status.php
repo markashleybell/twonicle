@@ -14,7 +14,7 @@ if (mysqli_connect_errno()) {
 
 $db->set_charset("utf8");
 
-$sql = "INSERT INTO statuses (userid, statusid, time, text, source, favorite, coordinates, geo, place, contributors, pick) VALUES " .
+$sql = "INSERT INTO " . $config['table_prefix'] . "statuses (userid, statusid, time, text, source, favorite, coordinates, geo, place, contributors, pick) VALUES " .
        "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
 
 $cmd = $db->stmt_init();
