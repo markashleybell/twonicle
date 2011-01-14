@@ -16,7 +16,7 @@ $db->set_charset("utf8");
 // Check if there is already an update in progress
 $processing = 0;
 
-if ($result = $db->query("select v as processing from system where k = 'processing'")) 
+if ($result = $db->query("select v as processing from " . $config['table_prefix'] . "system where k = 'processing'")) 
 {
     $row = $result->fetch_object();
     if($row->processing) $processing = $row->processing;
@@ -44,12 +44,12 @@ if($processing)
 else
 {
 // Set the flag that tells everyone else there's an update in progress
-$db->query("update system set v = 1 where k = 'processing'");
+$db->query("update " . $config['table_prefix'] . "system set v = 1 where k = 'processing'");
 
 // Get the last status id stored, so that we only retrieve new tweets
 $since = 100;
 
-if ($result = $db->query("select max(statusid) as since from statuses")) {
+if ($result = $db->query("select max(statusid) as since from " . $config['table_prefix'] . "statuses")) {
     $row = $result->fetch_object();
     if($row->since) $since = $row->since;
     $result->close();
