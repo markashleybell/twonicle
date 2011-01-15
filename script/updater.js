@@ -123,10 +123,6 @@ function saveStatus()
     if(statuses.length > 0)
     {
         var s = statuses.pop();
-        
-        // If it's a retweet we want the data from the original tweet instead
-        if(typeof s.retweeted_status != 'undefined')
-            s = s.retweeted_status;
 
         $.ajax({
             url: 'save_status.php',

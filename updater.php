@@ -9,8 +9,6 @@ if (mysqli_connect_errno())
     exit();
 }
 
-// mysqli_report(MYSQLI_REPORT_ERROR);
-
 $db->set_charset("utf8");
 
 // Check if there is already an update in progress

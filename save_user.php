@@ -10,8 +10,6 @@ if (mysqli_connect_errno()) {
     exit();
 }
 
-// mysqli_report(MYSQLI_REPORT_ERROR);
-
 $db->set_charset("utf8");
 
 $sql = "INSERT INTO " . $config['table_prefix'] . "people (screenname, realname, location, description, profileimage, url, enabled, userid) VALUES " .
