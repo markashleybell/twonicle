@@ -212,7 +212,7 @@ function updateLastUpdateTime()
         type: 'POST',
         success: function(data, status, request) { 
             log('Update finished at ' + data.lastupdate);
-            log('<a href="' + ((appBaseUrl != '/') ? appBaseUrl.substring(0, appBaseUrl.length - 1) : '/') + '">Return to archive</a>');
+            log('<a href="/' + appBaseUrl + '">Return to archive</a>');
         },
         error: handleAjaxError
     });

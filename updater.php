@@ -1,6 +1,8 @@
 <?php
 require('config/config.php');
 
+$basepath = $config['app_base_path'];
+
 $db = new mysqli($config['server'], $config['username'], $config['password'], $config['database']);
 
 if (mysqli_connect_errno()) 
@@ -61,7 +63,7 @@ if ($result = $db->query("select max(statusid) as since from " . $config['table_
         <script type="text/javascript" src="script/jquery.jsonp-2.1.4.min.js"></script>
         <script type="text/javascript">
             var mostRecentId = '<?php echo $since; ?>';
-			var appBaseUrl = '<?php echo $config['app_base_path']; ?>';
+			var appBaseUrl = '<?php echo $basepath; ?>';
         </script>
         <script type="text/javascript" src="script/updater.js"></script>
 	</head>

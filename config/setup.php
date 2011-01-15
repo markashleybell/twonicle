@@ -7,6 +7,7 @@ if(isset($_POST['server']))
     $dbname = $_POST['dbname'];
     $basepath = $_POST['basepath'];
     $tableprefix = $_POST['tableprefix'];
+    $anywhereapikey = $_POST['anywhereapikey'];
 
     $db = new mysqli($server, $username, $password);
 
@@ -35,7 +36,7 @@ if(isset($_POST['server']))
     // Write the local config file with user-supplied values
     $config = <<<CONFIG
 <?php
-\$local_config['anywhere_api_key'] = 'idyTlCoEihlkLSC0ezJ1Q';
+\$local_config['anywhere_api_key'] = '$anywhereapikey';
 
 \$local_config['server'] = '$server';
 \$local_config['database'] = '$dbname';
@@ -113,7 +114,9 @@ CONFIG;
                 <p><label for="tableprefix">Twonicle Table Prefix</label>
                 <input type="text" id="tableprefix" name="tableprefix" value="twonicle_" /></p>
                 <p><label for="basepath">App Base Path</label>
-                <input type="text" id="basepath" name="basepath" value="/" /></p>
+                <input type="text" id="basepath" name="basepath" value="" /> (e.g twonicle, leave blank for root) </p>
+                <p><label for="anywhereapikey">@Anywhere API Key</label>
+                <input type="text" id="anywhereapikey" name="anywhereapikey" value="" /></p>
                 <p><input type="submit" value="Set Up Now" /></p>
             </form>
         </div>

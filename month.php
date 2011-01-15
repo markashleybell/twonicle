@@ -4,12 +4,14 @@ require('include/status.php');
 require('include/month.php');
 require('include/db.php');
 
+$basepath = ($config['app_base_path'] == '') ? '' : $config['app_base_path'] . '/';
+
 $db = new DB($config['server'], $config['username'], $config['password'], $config['database'], $config['table_prefix']);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 	<head>
-        <link rel="stylesheet" type="text/css" href="<?php echo $config['app_base_path']; ?>css/screen.css" />
+        <link rel="stylesheet" type="text/css" href="/<?php echo $basepath; ?>css/screen.css" />
 		<script src="http://platform.twitter.com/anywhere.js?id=<?php echo $config['anywhere_api_key']; ?>&amp;v=1"></script>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
         <script type="text/javascript">
@@ -29,7 +31,7 @@ $db = new DB($config['server'], $config['username'], $config['password'], $confi
             <div id="tweets">
                 <?php
                 if($db->needsUpdate($config['update_interval_hours']))
-                    echo '<h2 class="warning">Archive has not been updated for more than ' . $config['update_interval_hours'] . ' hours. <a href="'. $config['app_base_path'] . 'update">Update Now</a>.</h2>';
+                    echo '<h2 class="warning">Archive has not been updated for more than ' . $config['update_interval_hours'] . ' hours. <a href="/'. $basepath . 'update">Update Now</a>.</h2>';
         
                 $result = $db->getTweetsByMonth($_GET['y'], $_GET['m']);
 
