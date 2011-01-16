@@ -65,6 +65,7 @@ if ($result = $db->query("select max(statusid) as since from " . $config['db_tab
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
         <script type="text/javascript" src="script/jquery.jsonp-2.1.4.min.js"></script>
         <script type="text/javascript">
+            var twitterUserName = '<?php echo $config['twitter_username']; ?>';
             var mostRecentId = '<?php echo $since; ?>';
 			var appBaseUrl = '<?php echo $jsbasepath; ?>';
         </script>

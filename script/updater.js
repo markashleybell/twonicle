@@ -57,7 +57,7 @@ function retrieveStatusData()
 {
     $.jsonp({
         url: 'http://api.twitter.com/1/statuses/user_timeline.json?callback=?',
-        data: { screen_name: 'markeebee', include_rts: 1, trim_user: 1, count: 200, since_id: mostRecentId, page: currentPage },
+        data: { screen_name: twitterUserName, include_rts: 1, trim_user: 1, count: 200, since_id: mostRecentId, page: currentPage },
         timeout: requestTimeout,
         success: function(data, status, request) { 
             
