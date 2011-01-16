@@ -1,9 +1,7 @@
 <?php
 require('config/config.php');
 
-error_reporting(E_ALL);
-
-$db = new mysqli($config['server'], $config['username'], $config['password'], $config['database']);
+$db = new mysqli($config['db_server'], $config['db_username'], $config['db_password'], $config['db_database']);
 
 if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());
@@ -12,14 +10,14 @@ if (mysqli_connect_errno()) {
 
 $db->set_charset("utf8");
 
-$sql = "INSERT INTO " . $config['table_prefix'] . "people (screenname, realname, location, description, profileimage, url, enabled, userid) VALUES " .
+$sql = "INSERT INTO " . $config['db_table_prefix'] . "people (screenname, realname, location, description, profileimage, url, enabled, userid) VALUES " .
        "(?, ?, ?, ?, ?, ?, ?, ?)";
 
 $userid = $_POST['user']['id_str'];
 $isnew = true;
 
 $check = $db->stmt_init();
-$check->prepare("select id from " . $config['table_prefix'] . "people where userid = ?");
+$check->prepare("select id from " . $config['db_table_prefix'] . "people where userid = ?");
 $check->bind_param("i", $userid);
 $check->execute();
 $check->store_result();
@@ -27,7 +25,7 @@ $check->store_result();
 // If we already have data for this user, just update it
 if($check->num_rows > 0)
 {
-    $sql = "UPDATE " . $config['table_prefix'] . "people set screenname = ?, realname = ?, location = ?, description = ?, profileimage = ?, url = ?, enabled = ? where userid = ?";
+    $sql = "UPDATE " . $config['db_table_prefix'] . "people set screenname = ?, realname = ?, location = ?, description = ?, profileimage = ?, url = ?, enabled = ? where userid = ?";
     $isnew = false;
 }
 

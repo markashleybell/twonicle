@@ -1,9 +1,7 @@
 <?php
 require('config/config.php');
 
-error_reporting(E_ALL);
-
-$db = new mysqli($config['server'], $config['username'], $config['password'], $config['database']);
+$db = new mysqli($config['db_server'], $config['db_username'], $config['db_password'], $config['db_database']);
 
 if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());
@@ -12,7 +10,7 @@ if (mysqli_connect_errno()) {
 
 $db->set_charset("utf8");
 
-$sql = "INSERT INTO " . $config['table_prefix'] . "statuses (userid, statusid, rtstatusid, time, text, source, favorite, coordinates, geo, place, contributors, pick) VALUES " .
+$sql = "INSERT INTO " . $config['db_table_prefix'] . "statuses (userid, statusid, rtstatusid, time, text, source, favorite, coordinates, geo, place, contributors, pick) VALUES " .
        "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
 
 $cmd = $db->stmt_init();

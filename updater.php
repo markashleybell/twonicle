@@ -4,7 +4,7 @@ require('config/config.php');
 $jsbasepath = $config['app_base_path'];
 $basepath = ($config['app_base_path'] == '') ? '' : $config['app_base_path'] . '/';
 
-$db = new mysqli($config['server'], $config['username'], $config['password'], $config['database']);
+$db = new mysqli($config['db_server'], $config['db_username'], $config['db_password'], $config['db_database']);
 
 if (mysqli_connect_errno()) 
 {
@@ -17,7 +17,7 @@ $db->set_charset("utf8");
 // Check if there is already an update in progress
 $processing = 0;
 
-if ($result = $db->query("select v as processing from " . $config['table_prefix'] . "system where k = 'processing'")) 
+if ($result = $db->query("select v as processing from " . $config['db_table_prefix'] . "system where k = 'processing'")) 
 {
     $row = $result->fetch_object();
     if($row->processing) $processing = $row->processing;
@@ -46,12 +46,12 @@ if($processing)
 else
 {
 // Set the flag that tells everyone else there's an update in progress
-$db->query("update " . $config['table_prefix'] . "system set v = 1 where k = 'processing'");
+$db->query("update " . $config['db_table_prefix'] . "system set v = 1 where k = 'processing'");
 
 // Get the last status id stored, so that we only retrieve new tweets
 $since = 100;
 
-if ($result = $db->query("select max(statusid) as since from " . $config['table_prefix'] . "statuses")) {
+if ($result = $db->query("select max(statusid) as since from " . $config['db_table_prefix'] . "statuses")) {
     $row = $result->fetch_object();
     if($row->since) $since = $row->since;
     $result->close();

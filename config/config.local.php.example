@@ -1,12 +1,12 @@
 <?php
-$local_config['anywhere_api_key'] = 'youranywhereapikey';
+$local_config['twitter_username'] = 'yourtwitterusername';
 
-$local_config['server'] = 'yourservername';
-$local_config['database'] = 'yourdatabasename';
-$local_config['username'] = 'yourusername';
-$local_config['password'] = 'yourpassword';
+$local_config['app_base_path'] = 'yourinstallationfolder';
+$local_config['app_anywhere_api_key'] = 'youranywhereapikey';
 
-$local_config['app_base_path'] = '/';
-
-$local_config['table_prefix'] = 'twonicle_';
+$local_config['db_server'] = 'yourdatabaseservername';
+$local_config['db_database'] = 'yourdatabasename';
+$local_config['db_username'] = 'yourdatabaseusername';
+$local_config['db_password'] = 'yourdatabasepassword';
+$local_config['db_table_prefix'] = 'twonicle_';
 ?>
