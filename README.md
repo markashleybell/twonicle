@@ -6,8 +6,8 @@ Twonicle is a way to archive and search your tweets, independently of the Twitte
 How to set up Twonicle on your own server
 =========================================
 
-1. Get the source: `https://github.com/markashleybell/twonicle.git`
-2. Copy the folder to your web server root (and rename it if you like)
+1. Get the source: `git clone https://github.com/markashleybell/twonicle.git`
+2. Copy the whole folder to your web server root (and rename it if you like)
 3. Point your browser to `http://yourserver.com/twonicle/setup`
 4. Fill in your details and submit
 5. Follow the instructions to import your tweets
