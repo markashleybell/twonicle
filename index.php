@@ -12,6 +12,7 @@ $db = new DB($config['server'], $config['username'], $config['password'], $confi
 <html>
 	<head>
         <link rel="stylesheet" type="text/css" href="/<?php echo $basepath; ?>css/screen.css" />
+        <link rel="shortcut icon" href="/<?php echo $basepath; ?>img/site/favicon.ico" />
 		<script src="http://platform.twitter.com/anywhere.js?id=<?php echo $config['anywhere_api_key']; ?>&amp;v=1"></script>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
         <script type="text/javascript">
