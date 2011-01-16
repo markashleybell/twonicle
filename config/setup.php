@@ -86,7 +86,7 @@ CONFIG;
                     success: function(data, status, request) { 
                         
                         if(data.exists)
-                            $('#dbname').after('<br /><span>WARNING: The specified database already exists. If any tables in the existing database have the same names as those being created they will be dropped and all data in them will be lost!</span>');
+                            $('#db_name').after('<br /><span>WARNING: The specified database already exists. If any tables in the existing database have the same names as those being created they will be dropped and all data in them will be lost!</span>');
                         
                     },
                     error: function(request, status, error) {
@@ -99,7 +99,7 @@ CONFIG;
             
             $(function(){
                 
-                $('#dbname').bind('blur', function() { checkIfDatabaseExists($(this).val()); });
+                $('#db_name').bind('blur', function() { checkIfDatabaseExists($(this).val()); });
                 
             });
             
