@@ -48,9 +48,39 @@ function isIdNew(id)
     return (id > mostRecentId);
 }
 
+function handleGenericError(request, status, error)
+{
+    log('There was an error communicating with the server');
+}
+
+function handleJSONPError(opts, status)
+{
+    // If we got here, there's been an error retrieving the API feed; we need to reset the
+    // processing flag so the update can be re-run         
+    $.ajax({
+        url: 'reset_processing_flag.php',
+        dataType: 'json',
+        type: 'POST',
+        success: function(data, status, request) { 
+            log('There was an error retrieving the data, please reload this page to try again');
+        },
+        error: handleGenericError
+    });
+}
+
 function handleAjaxError(request, status, error)
-{   
-    log('An error occurred while saving data');
+{
+    // If we got here, there's been an error retrieving the API feed; we need to reset the
+    // processing flag so the update can be re-run         
+    $.ajax({
+        url: 'reset_processing_flag.php',
+        dataType: 'json',
+        type: 'POST',
+        success: function(data, status, request) { 
+            log('There was an error saving the data, please reload this page to try again');
+        },
+        error: handleGenericError
+    });
 }
 
 function retrieveStatusData()
@@ -101,20 +131,7 @@ function retrieveStatusData()
             }
 
         },
-        error: function (opts, status)
-        {      
-            // If we got here, there's been an error retrieving the API feed; we need to reset the
-            // processing flag so the update can be re-run         
-            $.ajax({
-                url: 'reset_processing_flag.php',
-                dataType: 'json',
-                type: 'POST',
-                success: function(data, status, request) { 
-                    log('There was an error retrieving the data, please reload this page to try again');
-                },
-                error: handleAjaxError
-            });
-        }
+        error: handleJSONPError
     });
 }
 
@@ -165,10 +182,7 @@ function retrieveUserData()
                 users.push(data);
                 retrieveUserData();
             },
-            error: function(opts, status)
-            {
-                log('There was an error retrieving the data, please reload this page to try again');
-            }
+            error: handleJSONPError
         });
     }
     else
@@ -214,7 +228,7 @@ function updateLastUpdateTime()
             log('Update finished at ' + data.lastupdate);
             log('<a href="/' + appBaseUrl + '">Return to archive</a>');
         },
-        error: handleAjaxError
+        error: handleGenericError
     });
 }
 
