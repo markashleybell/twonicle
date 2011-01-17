@@ -14,7 +14,7 @@ $now = strtotime("now");
 
 // Store the last updated date in the database
 $cmd = $db->stmt_init();
-$cmd->prepare("update " . $config['db_table_prefix'] . "system set v = ? where k = 'lastupdated'");
+$cmd->prepare("update " . $config['db_table_prefix'] . "system set v = ? where k = 'lastupdatecompleted'");
 $cmd->bind_param("i", $now);
 $cmd->execute();
 $cmd->close();

@@ -26,7 +26,7 @@ class DB
         // Get the last time the archive was updated
         $_lastupdate = 1000;
 
-        if ($_result = $this->_db->query("select v as lastupdate from " . $this->_prefix . "system where k = 'lastupdated'")) {
+        if ($_result = $this->_db->query("select v as lastupdate from " . $this->_prefix . "system where k = 'lastupdatecompleted'")) {
             $_row = $_result->fetch_object();
             if($_row->lastupdate) $_lastupdate = $_row->lastupdate;
             $_result->close();

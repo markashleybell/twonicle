@@ -38,5 +38,6 @@ CREATE TABLE  `twonicle`.`system` (
   PRIMARY KEY (`k`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-INSERT INTO `twonicle`.`system` VALUES ('lastupdated', '1000000000');
+INSERT INTO `twonicle`.`system` VALUES ('lastupdatestarted', '1000000000');
+INSERT INTO `twonicle`.`system` VALUES ('lastupdatecompleted', '1000000000');
 INSERT INTO `twonicle`.`system` VALUES ('processing', '0');
