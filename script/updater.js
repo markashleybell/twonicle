@@ -143,7 +143,7 @@ function saveStatus()
 
         $.ajax({
             url: 'save_status.php',
-            data: { status: s },
+            data: { status: JSON.stringify(s) },
             dataType: 'json',
             type: 'POST',
             success: function(data, status, request) { 
@@ -200,7 +200,7 @@ function saveUser()
 
         $.ajax({
             url: 'save_user.php',
-            data: { user: u },
+            data: { user: JSON.stringify(u) },
             dataType: 'json',
             type: 'POST',
             success: function(data, status, request) { 

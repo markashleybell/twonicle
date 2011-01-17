@@ -63,7 +63,8 @@ if ($result = $db->query("select max(statusid) as since from " . $config['db_tab
         <link rel="stylesheet" type="text/css" href="/<?php echo $basepath; ?>css/updater.css" />
         <link rel="shortcut icon" href="/<?php echo $basepath; ?>img/site/favicon.ico" />
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-        <script type="text/javascript" src="script/jquery.jsonp-2.1.4.min.js"></script>
+        <script type="text/javascript" src="/<?php echo $basepath; ?>script/jquery.jsonp-2.1.4.min.js"></script>
+        <script type="text/javascript" src="/<?php echo $basepath; ?>script/json2.js"></script>
         <script type="text/javascript">
             var twitterUserName = '<?php echo $config['twitter_username']; ?>';
             var mostRecentId = '<?php echo $since; ?>';

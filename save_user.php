@@ -10,10 +10,18 @@ if (mysqli_connect_errno()) {
 
 $db->set_charset("utf8");
 
-$sql = "INSERT INTO " . $config['db_table_prefix'] . "people (screenname, realname, location, description, profileimage, url, enabled, userid) VALUES " .
-       "(?, ?, ?, ?, ?, ?, ?, ?)";
+$sql =  "INSERT INTO " . $config['db_table_prefix'] . "people (screenname, realname, location, description, profileimage, url, enabled, userid) VALUES " .
+        "(?, ?, ?, ?, ?, ?, ?, ?)";
 
-$userid = $_POST['user']['id_str'];
+$userJSON = $_POST["user"];
+
+// Replace ID's with string representations
+$userJSON = preg_replace("/\"([a-z_]+_)?id\":(\d+)(,|\}|\])/", "\"$1id\":\"$2\"$3", $userJSON);
+
+$user = json_decode($userJSON, true);
+
+$userid = $user['id_str'];
+$geo = ($user['geo_enabled'] == true) ? 1 : 0;
 $isnew = true;
 
 $check = $db->stmt_init();
@@ -33,14 +41,14 @@ $check->close();
 
 $cmd = $db->stmt_init();
 $cmd->prepare($sql);
-$cmd->bind_param("ssssssis", $_POST['user']['screen_name'],
-                             $_POST['user']['name'],
-                             $_POST['user']['location'],
-                             $_POST['user']['description'],
-                             $_POST['user']['profile_image_url'],
-                             $_POST['user']['url'],
-                             $_POST['user']['geo_enabled'],
-                             $_POST['user']['id_str']);
+$cmd->bind_param("ssssssis", $user['screen_name'],
+                             $user['name'],
+                             $user['location'],
+                             $user['description'],
+                             $user['profile_image_url'],
+                             $user['url'],
+                             $geo,
+                             $user['id_str']);
 $cmd->execute();
 
 $cmd->close();

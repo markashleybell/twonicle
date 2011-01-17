@@ -16,38 +16,57 @@ $sql = "INSERT INTO " . $config['db_table_prefix'] . "statuses (userid, statusid
 $cmd = $db->stmt_init();
 $cmd->prepare($sql);
 
+$statusJSON = $_POST["status"];
+
+// Replace ID's with string representations
+$statusJSON = preg_replace("/\"([a-z_]+_)?id\":(\d+)(,|\}|\])/", "\"$1id\":\"$2\"$3", $statusJSON);
+
+$status = json_decode($statusJSON, true);
+
+$coordinates = NULL;
+$geo = NULL;
+$place = NULL;
+
 // If it's a retweet, we store all the details for the original tweet, with the exception that the original's id
 // is stored in the field rtstatusid and the retweet's id is stored as the actual id
-if(isset($_POST['status']['retweeted_status']))
+if(isset($status['retweeted_status']))
 {
-    $cmd->bind_param("sssississss", $_POST['status']['retweeted_status']['user']['id_str'],
-                                    $_POST['status']['id_str'],
-                                    $_POST['status']['retweeted_status']['id_str'],
-                                    strtotime($_POST['status']['retweeted_status']['created_at']),
-                                    $_POST['status']['retweeted_status']['text'],
-                                    $_POST['status']['retweeted_status']['source'],
-                                    $_POST['status']['retweeted_status']['favorited'],
-                                    $_POST['status']['retweeted_status']['coordinates'],
-                                    $_POST['status']['retweeted_status']['geo'],
-                                    $_POST['status']['retweeted_status']['created_at'],
-                                    $_POST['status']['retweeted_status']['contributors']);
+    if(isset($status['retweeted_status']['coordinates'])) $coordinates = json_encode($status['retweeted_status']['coordinates']);
+    if(isset($status['retweeted_status']['geo'])) $geo = json_encode($status['retweeted_status']['geo']);
+    if(isset($status['retweeted_status']['place'])) $place = json_encode($status['retweeted_status']['place']);
+    
+    $cmd->bind_param("sssississss", $status['retweeted_status']['user']['id_str'],
+                                    $status['id_str'],
+                                    $status['retweeted_status']['id_str'],
+                                    strtotime($status['retweeted_status']['created_at']),
+                                    $status['retweeted_status']['text'],
+                                    $status['retweeted_status']['source'],
+                                    $status['retweeted_status']['favorited'],
+                                    $coordinates,
+                                    $geo,
+                                    $place,
+                                    $status['retweeted_status']['contributors']);
 
 }
 else
 {
     $noid = "0";
-
-    $cmd->bind_param("sssississss", $_POST['status']['user']['id_str'],
-                                    $_POST['status']['id_str'],
+    
+    if(isset($status['coordinates'])) $coordinates = json_encode($status['coordinates']);
+    if(isset($status['geo'])) $geo = json_encode($status['geo']);
+    if(isset($status['place'])) $place = json_encode($status['place']);
+    
+    $cmd->bind_param("sssississss", $status['user']['id_str'],
+                                    $status['id_str'],
                                     $noid,
-                                    strtotime($_POST['status']['created_at']),
-                                    $_POST['status']['text'],
-                                    $_POST['status']['source'],
-                                    $_POST['status']['favorited'],
-                                    $_POST['status']['coordinates'],
-                                    $_POST['status']['geo'],
-                                    $_POST['status']['created_at'],
-                                    $_POST['status']['contributors']);
+                                    strtotime($status['created_at']),
+                                    $status['text'],
+                                    $status['source'],
+                                    $status['favorited'],
+                                    $coordinates,
+                                    $geo,
+                                    $place,
+                                    $status['contributors']);
 }
 
 $cmd->execute();

@@ -4,12 +4,10 @@ CREATE TABLE  `twonicle`.`statuses` (
   `userid` int(10) unsigned NOT NULL,
   `statusid` bigint(20) unsigned NOT NULL,
   `rtstatusid` bigint(20) unsigned NOT NULL,
-  `type` tinyint(4) NOT NULL DEFAULT '0',
   `time` int(10) unsigned NOT NULL,
   `text` varchar(255) NOT NULL,
   `source` varchar(255) NOT NULL,
   `favorite` tinyint(4) NOT NULL DEFAULT '0',
-  `extra` text NOT NULL,
   `coordinates` text,
   `geo` text,
   `place` text,
@@ -28,8 +26,7 @@ CREATE TABLE  `twonicle`.`people` (
   `location` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL,
   `profileimage` varchar(255) NOT NULL,
-  `url` varchar(255) NOT NULL,
-  `extra` text NOT NULL,
+  `url` varchar(255) DEFAULT NULL,
   `enabled` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
