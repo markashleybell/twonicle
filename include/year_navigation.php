@@ -7,7 +7,7 @@
     $result = $db->getYearNavigation($nav_year, true);
     
     foreach ($result as $month) {
-        echo '<li' . (($nav_month == $month->number) ? ' class="current-month"' : '') .  '><a href="/' . $nav_basepath . $month->year . '/' . str_pad($month->number, 2, "0", STR_PAD_LEFT) . '"><span>' . $month->name . ' ' . $month->year . ' (' . $month->count . ')</span></a></li>';
+        echo '<li' . (($nav_month == $month->number && $nav_year == $month->year) ? ' class="current-month"' : '') .  '><a href="/' . $nav_basepath . $month->year . '/' . str_pad($month->number, 2, "0", STR_PAD_LEFT) . '"><span>' . $month->name . ' ' . $month->year . ' (' . $month->count . ')</span></a></li>';
     }
     ?>
 </ul>
