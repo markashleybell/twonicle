@@ -47,41 +47,6 @@ class DB
         return $_updateneeded;
     }
 
-    public function getRecentTweets()
-    {
-        $sql = "select s.id, s.time, s.text, p.screenname, p.realname, p.profileimage " .
-               "from " . $this->_prefix . "statuses as s " .
-               "inner join " . $this->_prefix . "people as p " .
-               "on p.userid = s.userid " .
-               "order by time desc limit 100";
-
-        $cmd = $this->_db->stmt_init();
-        $cmd->prepare($sql);
-        $cmd->execute();
-
-        $cmd->bind_result($_id, $_time, $_text, $_screenname, $_realname, $_profileimage);
-
-        $result = array();
-
-        while ($row = $cmd->fetch()) {
-
-            $s = new Status();
-            
-            $s->id = $_id;
-            $s->time = $_time;
-            $s->text = linkify($_text);
-            $s->screenname = $_screenname;
-            $s->realname = $_realname; 
-            $s->profileimage = $_profileimage;
-
-            $result[] = $s;
-        }
-
-        $cmd->close();
-        
-        return $result;
-    }
-    
     public function getYearNavigation($y, $all)
     {
         $months = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
@@ -119,10 +84,49 @@ class DB
 
         return $result;
     }
+    
+    public function getRecentTweets()
+    {
+        $sql = "select s.statusid, s.rtstatusid, s.inreplytoid, s.inreplytouser, s.time, s.text, p.screenname, p.realname, p.profileimage " .
+               "from " . $this->_prefix . "statuses as s " .
+               "inner join " . $this->_prefix . "people as p " .
+               "on p.userid = s.userid " .
+               "order by time desc limit 100";
+
+        $cmd = $this->_db->stmt_init();
+        $cmd->prepare($sql);
+        $cmd->execute();
+
+        $cmd->bind_result($_statusid, $_rtstatusid, $_inreplytoid, $_inreplytouser, $_time, $_text, $_screenname, $_realname, $_profileimage);
+
+        $result = array();
+
+        while ($row = $cmd->fetch()) {
+
+            $s = new Status();
+            
+            $s->id = $_statusid;
+            $s->rtid = $_rtstatusid;
+            $s->inreplytoid = $_inreplytoid;
+            $s->inreplytouser = $_inreplytouser;
+            
+            $s->time = $_time;
+            $s->text = linkify($_text);
+            $s->screenname = $_screenname;
+            $s->realname = $_realname; 
+            $s->profileimage = $_profileimage;
+
+            $result[] = $s;
+        }
+
+        $cmd->close();
+        
+        return $result;
+    }
 
     public function getTweetsByMonth($y, $m)
     {
-        $sql = "select s.id, s.time, s.text, p.screenname, p.realname, p.profileimage " .
+        $sql = "select s.statusid, s.rtstatusid, s.inreplytoid, s.inreplytouser, s.time, s.text, p.screenname, p.realname, p.profileimage " .
                "from " . $this->_prefix . "statuses as s " .
                "inner join " . $this->_prefix . "people as p " .
                "on p.userid = s.userid " .
@@ -134,7 +138,7 @@ class DB
         $cmd->bind_param("ii", $y, $m);
         $cmd->execute();
 
-        $cmd->bind_result($_id, $_time, $_text, $_screenname, $_realname, $_profileimage);
+        $cmd->bind_result($_statusid, $_rtstatusid, $_inreplytoid, $_inreplytouser, $_time, $_text, $_screenname, $_realname, $_profileimage);
 
         $result = array();
 
@@ -142,7 +146,11 @@ class DB
 
             $s = new Status();
             
-            $s->id = $_id;
+            $s->id = $_statusid;
+            $s->rtid = $_rtstatusid;
+            $s->inreplytoid = $_inreplytoid;
+            $s->inreplytouser = $_inreplytouser;
+            
             $s->time = $_time;
             $s->text = linkify($_text);
             $s->screenname = $_screenname;
@@ -159,7 +167,7 @@ class DB
 
     public function getTweetsByDay($y, $m, $d)
     {
-        $sql = "select s.id, s.time, s.text, p.screenname, p.realname, p.profileimage " .
+        $sql = "select s.statusid, s.rtstatusid, s.inreplytoid, s.inreplytouser, s.time, s.text, p.screenname, p.realname, p.profileimage " .
                "from " . $this->_prefix . "statuses as s " .
                "inner join " . $this->_prefix . "people as p " .
                "on p.userid = s.userid " .
@@ -171,7 +179,7 @@ class DB
         $cmd->bind_param("iii", $y, $m, $d);
         $cmd->execute();
 
-        $cmd->bind_result($_id, $_time, $_text, $_screenname, $_realname, $_profileimage);
+        $cmd->bind_result($_statusid, $_rtstatusid, $_inreplytoid, $_inreplytouser, $_time, $_text, $_screenname, $_realname, $_profileimage);
 
         $result = array();
 
@@ -179,7 +187,11 @@ class DB
 
             $s = new Status();
             
-            $s->id = $_id;
+            $s->id = $_statusid;
+            $s->rtid = $_rtstatusid;
+            $s->inreplytoid = $_inreplytoid;
+            $s->inreplytouser = $_inreplytouser;
+            
             $s->time = $_time;
             $s->text = linkify($_text);
             $s->screenname = $_screenname;

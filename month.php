@@ -3,6 +3,7 @@ require('config/config.php');
 require('include/status.php');
 require('include/month.php');
 require('include/db.php');
+require('include/display_status.php');
 
 $basepath = ($config['app_base_path'] == '') ? '' : $config['app_base_path'] . '/';
 
@@ -37,9 +38,7 @@ $db = new DB($config['db_server'], $config['db_username'], $config['db_password'
                 $result = $db->getTweetsByMonth($_GET['y'], $_GET['m']);
 
                 foreach ($result as $status) {
-                    echo '<div class="tweet"><img src="' . $status->profileimage . '" /> <div class="details">' .
-                         '<span class="username">' . $status->screenname . '</span> <span class="realname">' . $status->realname . '</span><span class="text">' . $status->text . '</span>' . 
-                         '<span class="date">' . date('d/m/y H:i', $status->time) . '</span></div></div>';
+                    echo displayStatus($status);
                 }
                 ?>
             </div>

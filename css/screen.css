@@ -9,13 +9,15 @@ p { margin: 40px 40px 0 40px; }
 
 #tweets { margin: 40px 220px 0 0; }
 .tweet { overflow: auto; margin: 20px 40px 0 0; }
-.tweet img { float: left; }
+.tweet img { float: left; border: none; }
 .tweet span { }
 .details { margin-left: 68px; }
-.username { font-size: 16px; font-weight: bold; margin-right: 10px; }
-.realname { font-size: 16px; color: #999; }
-.text { display: block; font-size: 18px; }
+.username { font-size: 16px; font-weight: bold; margin-right: 8px; }
+.username a { text-decoration: none; color: #000; }
+.realname { font-size: 14px; color: #999; }
+.text { display: block; font-size: 18px; padding: 2px 0 5px 0; }
 .date { font-size: 11px; color: #999; }
+.date a { outline: none; color: #999; }
 
 .warning, .warning a { color: #cc0000; }
 

@@ -4,6 +4,8 @@ CREATE TABLE  `twonicle`.`statuses` (
   `userid` int(10) unsigned NOT NULL,
   `statusid` bigint(20) unsigned NOT NULL,
   `rtstatusid` bigint(20) unsigned NOT NULL,
+  `inreplytoid` bigint(20) unsigned NOT NULL,
+  `inreplytouser` varchar(25) DEFAULT NULL,
   `time` int(10) unsigned NOT NULL,
   `text` varchar(255) NOT NULL,
   `source` varchar(255) NOT NULL,
