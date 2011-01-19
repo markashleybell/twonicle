@@ -1,6 +1,6 @@
 twttr.anywhere(function (T) {
     
-    T("#tweets .username, #tweets .twitter-anywhere-user").hovercards({ linkify: false });
+    T("#tweets .username, #tweets .text .twitter-anywhere-user").hovercards({ linkify: false });
     
     T("#tweets a.avatar-link").hovercards({
         username: function(node) {

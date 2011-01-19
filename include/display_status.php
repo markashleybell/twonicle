@@ -3,9 +3,9 @@
 function displayStatus($status)
 {
     return '<div class="tweet">' .
-               '<a class="avatar-link" href="http://twitter.com/' . $status->screenname . '"><img alt="@' . $status->screenname . '" title="" src="' . $status->profileimage . '" /></a> ' .
+               '<a class="avatar-link twitter-anywhere-user" href="http://twitter.com/' . $status->screenname . '"><img alt="@' . $status->screenname . '" title="" src="' . $status->profileimage . '" /></a> ' .
                '<div class="details">' .
-                   '<span class="username"><a href="http://twitter.com/' . $status->screenname . '">' . $status->screenname . '</a></span> ' .
+                   '<span class="username"><a class="twitter-anywhere-user" href="http://twitter.com/' . $status->screenname . '">' . $status->screenname . '</a></span> ' .
                    '<span class="realname">' . $status->realname . '</span>' .
                    '<span class="text">' . $status->text . '</span>' . 
                    '<span class="date">' .
