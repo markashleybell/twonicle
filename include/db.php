@@ -61,6 +61,39 @@ class DB {
         return $_updateneeded;
     
     }
+    
+    public function getDailyTweetCountsForMonth($y, $m) {
+        
+        $sql = "select DAY(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") as day, count(id) as count from " . $this->_prefix . "statuses  " . 
+               "where YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") = ? and MONTH(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") = ? " .
+               "group by DAY(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") " . 
+               "order by DAY(FROM_UNIXTIME(time)" . $this->_db_time_offset . ")"; 
+               
+        $cmd = $this->_db->stmt_init();
+        $cmd->prepare($sql);
+        $cmd->bind_param("ii", $y, $m);
+        $cmd->execute();
+
+        $cmd->bind_result($_day, $_count);
+        
+        $result = array();
+
+        while ($row = $cmd->fetch()) {
+            
+            $d = new Day();
+            
+            $d->day = $_day;
+            $d->count = $_count;
+            
+            $result[] = $d;
+            
+        }
+
+        $cmd->close();
+        
+        return $result;
+        
+    }
 
     public function getYearNavigation($y, $all) {
         

@@ -3,6 +3,7 @@
 require('config/config.php');
 require('include/status.php');
 require('include/month.php');
+require('include/day.php');
 require('include/db.php');
 require('include/display_status.php');
 require('include/draw_month.php');
@@ -25,7 +26,7 @@ $db = new DB($config['db_server'], $config['db_username'], $config['db_password'
         <?php require('include/head.php'); ?>
         <div id="container">
             <div id="navigation">
-                <?php echo draw_month($_GET['y'], $_GET['m'], 0, '/' . $basepath); ?>
+                <?php echo draw_month($_GET['y'], $_GET['m'], 0, '/' . $basepath, $db->getDailyTweetCountsForMonth($_GET['y'], $_GET['m'])); ?>
                 <?php require('include/year_navigation.php'); ?>
             </div>
             <div id="tweets">

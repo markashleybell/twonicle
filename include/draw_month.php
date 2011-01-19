@@ -3,7 +3,7 @@
 // Code adapted from David Walsh's calendar function
 // http://davidwalsh.name/php-calendar
 
-function draw_month($year, $month, $highlight_day, $base_path) {
+function draw_month($year, $month, $highlight_day, $base_path, $counts) {
 
     /* draw table */
     $calendar = '<table class="calendar">';
@@ -20,7 +20,7 @@ function draw_month($year, $month, $highlight_day, $base_path) {
     $dates_array = array();
     
     /* row for week one */
-    $calendar .= '<tr class="calendar-row">';
+    $calendar .= '<tr>';
     
     /* print "blank" days until the first of the current week */
     for($x = 0; $x < $running_day; $x++) {
@@ -35,7 +35,7 @@ function draw_month($year, $month, $highlight_day, $base_path) {
         
         $calendar .= '<td>';
         /* add in the day number */
-        $calendar .= '<a href="' . $base_path . $year .'/' . $month . '/' . str_pad($list_day, 2, "0", STR_PAD_LEFT) . '"><span class="day ' . (($highlight_day == $list_day) ? 'current' : '') . '">'.$list_day.'</span></a>';
+        $calendar .= '<a href="' . $base_path . $year .'/' . $month . '/' . str_pad($list_day, 2, "0", STR_PAD_LEFT) . '"><span class="day ' . (($highlight_day == $list_day) ? 'current' : '') . '">' . $list_day . ':' . getTweetCountForDay($counts, $list_day) . '</span></a>';
             
         $calendar .= '</td>';
         
@@ -78,6 +78,20 @@ function draw_month($year, $month, $highlight_day, $base_path) {
     /* all done, return result */
     return $calendar;
 
+}
+
+function getTweetCountForDay($counts, $day) {
+    
+    foreach($counts as $d)
+    {
+        
+        if($d->day == $day)
+            return $d->count;
+        
+    }
+    
+    return 0;
+    
 }
 
 ?>
