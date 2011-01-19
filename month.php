@@ -5,6 +5,7 @@ require('include/status.php');
 require('include/month.php');
 require('include/db.php');
 require('include/display_status.php');
+require('include/draw_month.php');
 
 $basepath = ($config['app_base_path'] == '') ? '' : $config['app_base_path'] . '/';
 
@@ -24,6 +25,7 @@ $db = new DB($config['db_server'], $config['db_username'], $config['db_password'
         <?php require('include/head.php'); ?>
         <div id="container">
             <div id="navigation">
+                <?php echo draw_month($_GET['y'], $_GET['m'], 0, '/' . $basepath); ?>
                 <?php require('include/year_navigation.php'); ?>
             </div>
             <div id="tweets">
