@@ -1,7 +1,7 @@
 <?php
 
-function displayStatus($status)
-{
+function displayStatus($status) {
+    
     return '<div class="tweet">' .
                '<a class="avatar-link twitter-anywhere-user" href="http://twitter.com/' . $status->screenname . '"><img alt="@' . $status->screenname . '" title="" src="' . $status->profileimage . '" /></a> ' .
                '<div class="details">' .
@@ -14,6 +14,7 @@ function displayStatus($status)
                     '</span>' .
                '</div>' .
            '</div>';
+           
 }
 
 ?>

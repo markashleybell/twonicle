@@ -1,11 +1,14 @@
 <?php
+
 require('config/config.php');
 
 $db = new mysqli($config['db_server'], $config['db_username'], $config['db_password'], $config['db_database']);
 
 if (mysqli_connect_errno()) {
+    
     printf("Connect failed: %s\n", mysqli_connect_error());
     exit();
+    
 }
 
 $db->set_charset("utf8");
@@ -31,10 +34,11 @@ $check->execute();
 $check->store_result();
 
 // If we already have data for this user, just update it
-if($check->num_rows > 0)
-{
+if($check->num_rows > 0) {
+    
     $sql = "UPDATE " . $config['db_table_prefix'] . "people set screenname = ?, realname = ?, location = ?, description = ?, profileimage = ?, url = ?, enabled = ? where userid = ?";
     $isnew = false;
+    
 }
 
 $check->close();
@@ -54,4 +58,5 @@ $cmd->execute();
 $cmd->close();
 
 echo '{ "success": 1, "new": ' . (($isnew) ? 1 : 0) . ' }';
+
 ?>

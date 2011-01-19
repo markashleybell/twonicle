@@ -1,11 +1,14 @@
 <?php
+
 require('config/config.php');
 
 $db = new mysqli($config['db_server'], $config['db_username'], $config['db_password'], $config['db_database']);
 
 if (mysqli_connect_errno()) {
+    
     printf("Connect failed: %s\n", mysqli_connect_error());
     exit();
+    
 }
 
 $db->set_charset("utf8");
@@ -31,8 +34,8 @@ $inreplytouser = NULL;
 
 // If it's a retweet, we store all the details for the original tweet, with the exception that the original's id
 // is stored in the field rtstatusid and the retweet's id is stored as the actual id
-if(isset($status['retweeted_status']))
-{
+if(isset($status['retweeted_status'])) {
+    
     if(isset($status['retweeted_status']['coordinates'])) $coordinates = json_encode($status['retweeted_status']['coordinates']);
     if(isset($status['retweeted_status']['geo'])) $geo = json_encode($status['retweeted_status']['geo']);
     if(isset($status['retweeted_status']['place'])) $place = json_encode($status['retweeted_status']['place']);
@@ -53,9 +56,8 @@ if(isset($status['retweeted_status']))
                                     $place,
                                     $status['retweeted_status']['contributors']);
 
-}
-else
-{
+} else {
+    
     $noid = "0";
     
     if(isset($status['coordinates'])) $coordinates = json_encode($status['coordinates']);
@@ -77,6 +79,7 @@ else
                                     $geo,
                                     $place,
                                     $status['contributors']);
+    
 }
 
 $cmd->execute();
@@ -84,4 +87,5 @@ $cmd->execute();
 $cmd->close();
 
 echo '{ "success": 1 }';
+
 ?>

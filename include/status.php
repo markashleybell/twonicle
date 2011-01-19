@@ -1,7 +1,7 @@
 <?php
 
-class Status
-{
+class Status {
+    
     public $id;
     public $rtid;
     public $inreplytoid;
@@ -12,6 +12,7 @@ class Status
     public $screenname;
     public $realname; 
     public $profileimage;
+    
 }
 
 ?>

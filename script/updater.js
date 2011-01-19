@@ -8,22 +8,24 @@ var requestTimeout = 5000; // Time out Twitter API calls after 5 seconds
 var outputPanel;
 var tweetIdStatus;
 
-function log(msg, type)
-{
+function log(msg, type) {
+    
     cls = (typeof type == 'undefined') ? 'std' : type;
     outputPanel.append('<p class="' + cls + '">' + msg + '</p>');
+    
 }
 
-function addUser(user)
-{
+function addUser(user) {
+    
     userIds.push(user.id);
     userIds.sort(function(a, b) {
         return a - b;
     });
+    
 }
 
-function findUser(idList, id)
-{
+function findUser(idList, id) {
+    
     if(idList.length < 1) return false;
 
     var high = idList.length - 1;
@@ -38,23 +40,26 @@ function findUser(idList, id)
     }
     
     return false; // Value not found
+
 }
 
 // Check if an id is newer than the most recent saved
-function isIdNew(id)
-{
+function isIdNew(id) {
+    
     if(id.length > mostRecentId.length) return true;
     if(id.length < mostRecentId.length) return false;
     return (id > mostRecentId);
+    
 }
 
-function handleGenericError(request, status, error)
-{
+function handleGenericError(request, status, error) {
+    
     log('There was an error communicating with the server');
+    
 }
 
-function handleJSONPError(opts, status)
-{
+function handleJSONPError(opts, status) {
+    
     // If we got here, there's been an error retrieving the API feed; we need to reset the
     // processing flag so the update can be re-run         
     $.ajax({
@@ -66,11 +71,12 @@ function handleJSONPError(opts, status)
         },
         error: handleGenericError
     });
+    
 }
 
-function handleAjaxError(request, status, error)
-{
-    // If we got here, there's been an error retrieving the API feed; we need to reset the
+function handleAjaxError(request, status, error) {
+    
+    // If we got here, there's been an error saving data; we need to reset the
     // processing flag so the update can be re-run         
     $.ajax({
         url: 'reset_processing_flag.php',
@@ -83,38 +89,37 @@ function handleAjaxError(request, status, error)
     });
 }
 
-function retrieveStatusData()
-{
+function retrieveStatusData() {
+    
     $.jsonp({
         url: 'http://api.twitter.com/1/statuses/user_timeline.json?callback=?',
         data: { screen_name: twitterUserName, include_rts: 1, trim_user: 1, count: 200, since_id: mostRecentId, page: currentPage },
         timeout: requestTimeout,
         success: function(data, status, request) { 
             
-            for(var i = 0; i<data.length; i++)
-            {
+            for(var i = 0; i<data.length; i++) {
+                
                 var item = data[i];
                 var user = item.user;
 
                 // For some reason, 'id_str' can actually be slightly different than 'id' for the same tweet(!?!?)
                 // This means that the since_id parameter of the user_timeline call doesn't tie up with what we have stored
                 // We need to manually check our max id against the 'id_str' parameter to avoid odd duplicates here and there
-                if(isIdNew(item.id_str))
-                {
+                if(isIdNew(item.id_str)) {
+                    
                     if(item.retweeted_status)
                         user = item.retweeted_status.user;
 
                     if(!findUser(userIds, user.id))
-                    {
                         addUser(user);
-                    }
 
                     statuses.push(item);
                 }
+                
             }
 
-            if(data.length > 0)
-            {
+            if(data.length > 0) {
+                
                 // Again, a workaround for the fact that id can be different to its string representation
                 // We only need to test the last element because that's the only one that might be duped
                 if(isIdNew(data[data.length - 1].id_str))
@@ -124,21 +129,23 @@ function retrieveStatusData()
 
                 currentPage++;
                 retrieveStatusData();
-            }
-            else
-            {
+                
+            } else {
+                
                 retrieveUserData(userIds);
+                
             }
 
         },
         error: handleJSONPError
     });
+    
 }
 
-function saveStatus()
-{
-    if(statuses.length > 0)
-    {
+function saveStatus() {
+    
+    if(statuses.length > 0) {
+        
         var s = statuses.pop();
 
         $.ajax({
@@ -157,20 +164,21 @@ function saveStatus()
             },
             error: handleAjaxError
         });
-    }
-    else
-    {
+        
+    } else {
+        
         log('Finished saving tweets');
         
         // Kick off the user save
         saveUser();
+        
     }
 }
 
-function retrieveUserData()
-{
-    if(userIds.length > 0)
-    {
+function retrieveUserData() {
+    
+    if(userIds.length > 0) {
+        
         var id = userIds.pop();
         
         $.jsonp({
@@ -184,18 +192,19 @@ function retrieveUserData()
             },
             error: handleJSONPError
         });
-    }
-    else
-    {
+        
+    } else {
+        
         // Loop through the statuses and users and insert them all into the db
         saveStatus();
+        
     }
 }
 
-function saveUser()
-{
-    if(users.length > 0)
-    {
+function saveUser() {
+    
+    if(users.length > 0) {
+        
         var u = users.pop();
 
         $.ajax({
@@ -209,17 +218,18 @@ function saveUser()
             },
             error: handleAjaxError
         });
-    }
-    else
-    {
+        
+    } else {
+        
         log('Finished saving users');
         updateLastUpdateTime();
+        
     }
 }
 
 // Store a timestamp so we can tell how long it's been since the archive was updated
-function updateLastUpdateTime()
-{
+function updateLastUpdateTime() {
+    
     $.ajax({
         url: 'update_lastupdate.php',
         dataType: 'json',
@@ -230,9 +240,12 @@ function updateLastUpdateTime()
         },
         error: handleGenericError
     });
+    
 }
 
-$(function(){
+$(function() {
+    
     outputPanel = $('#output');
     retrieveStatusData();
+    
 });

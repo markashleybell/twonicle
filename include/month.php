@@ -1,11 +1,12 @@
 <?php
 
-class Month
-{
+class Month {
+    
     public $year;
     public $number;
     public $name;
     public $count;
+    
 }
 
 ?>

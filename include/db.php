@@ -2,17 +2,18 @@
 
 require('linkify.php');
 
-class DB
-{
+class DB {
+    
     private $_db = null;
     private $_prefix = "";
     public $_db_time_offset = 0;
 
-    public function __construct($server, $username, $password, $database, $tableprefix)
-    {
-        $this->_db = new mysqli($server, $username, $password, $database);		
+    public function __construct($server, $username, $password, $database, $tableprefix) {
+        
+        $this->_db = new mysqli($server, $username, $password, $database);
 
-        if (mysqli_connect_errno()) {
+        if (mysqli_connect_errno())
+        {
             printf("Connect failed: %s\n", mysqli_connect_error());
             exit();
         }
@@ -28,17 +29,20 @@ class DB
         if(!is_numeric($offset)) $offset = 0;
         
         $this->_db_time_offset = " " . (($offset >= 0) ? "+ " . $offset : $offset);
-	}
+        
+    }
 
-    public function needsUpdate($hours)
-    {
+    public function needsUpdate($hours) {
+        
         // Get the last time the archive was updated
         $_lastupdate = 1000;
 
         if ($_result = $this->_db->query("select v as lastupdate from " . $this->_prefix . "system where k = 'lastupdatecompleted'")) {
+            
             $_row = $_result->fetch_object();
             if($_row->lastupdate) $_lastupdate = $_row->lastupdate;
             $_result->close();
+            
         }
 
         $_now = time();
@@ -46,25 +50,27 @@ class DB
         $_updateneeded = false;
 
         // If the archive hasn't been updated for our specified number of hours
-        if($_hours > $hours)
-        {
+        if($_hours > $hours) {
+            
             // Do an update (showing progress with AJAX dialog) and load in new data (also AJAX)
             // Eventually we'll do this automatically, but for now just show a warning and a link to the updater
             $_updateneeded = true;
+            
         }
 
         return $_updateneeded;
+    
     }
 
-    public function getYearNavigation($y, $all)
-    {
+    public function getYearNavigation($y, $all) {
+        
         $months = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
 
         $where = ($all) ? "" : "where YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") = ? ";
 
-    	$sql = "select MONTH(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") as month, YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") as year, count(id) as count from " . $this->_prefix . "statuses " . $where .
-	           "group by YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . "), MONTH(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") " . 
-	           "order by YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") desc, MONTH(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") desc;";
+        $sql = "select MONTH(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") as month, YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") as year, count(id) as count from " . $this->_prefix . "statuses " . $where .
+               "group by YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . "), MONTH(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") " . 
+               "order by YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") desc, MONTH(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") desc;";
 
         $cmd = $this->_db->stmt_init();
         $cmd->prepare($sql);
@@ -73,7 +79,7 @@ class DB
             $cmd->bind_param("i", $y);
 
         $cmd->execute();
-	
+
         $cmd->bind_result($_month, $_year, $_count);
         
         $result = array();
@@ -87,15 +93,17 @@ class DB
             $m->count = $_count;
             
             $result[] = $m;
+            
         }
 
         $cmd->close();
 
         return $result;
+    
     }
     
-    public function getRecentTweets()
-    {
+    public function getRecentTweets() {
+        
         $sql = "select s.statusid, s.rtstatusid, s.inreplytoid, s.inreplytouser, s.time, s.text, p.screenname, p.realname, p.profileimage " .
                "from " . $this->_prefix . "statuses as s " .
                "inner join " . $this->_prefix . "people as p " .
@@ -111,7 +119,7 @@ class DB
         $result = array();
 
         while ($row = $cmd->fetch()) {
-
+            
             $s = new Status();
             
             $s->id = $_statusid;
@@ -126,15 +134,17 @@ class DB
             $s->profileimage = $_profileimage;
 
             $result[] = $s;
+            
         }
 
         $cmd->close();
         
         return $result;
+    
     }
 
-    public function getTweetsByMonth($y, $m)
-    {
+    public function getTweetsByMonth($y, $m) {
+        
         $sql = "select s.statusid, s.rtstatusid, s.inreplytoid, s.inreplytouser, s.time, s.text, p.screenname, p.realname, p.profileimage " .
                "from " . $this->_prefix . "statuses as s " .
                "inner join " . $this->_prefix . "people as p " .
@@ -152,7 +162,7 @@ class DB
         $result = array();
 
         while ($row = $cmd->fetch()) {
-
+            
             $s = new Status();
             
             $s->id = $_statusid;
@@ -167,15 +177,17 @@ class DB
             $s->profileimage = $_profileimage;
 
             $result[] = $s;
+            
         }
 
         $cmd->close();
 
         return $result;
+    
     }
 
-    public function getTweetsByDay($y, $m, $d)
-    {
+    public function getTweetsByDay($y, $m, $d) {
+        
         $sql = "select s.statusid, s.rtstatusid, s.inreplytoid, s.inreplytouser, s.time, s.text, p.screenname, p.realname, p.profileimage " .
                "from " . $this->_prefix . "statuses as s " .
                "inner join " . $this->_prefix . "people as p " .
@@ -193,7 +205,7 @@ class DB
         $result = array();
 
         while ($row = $cmd->fetch()) {
-
+            
             $s = new Status();
             
             $s->id = $_statusid;
@@ -208,12 +220,15 @@ class DB
             $s->profileimage = $_profileimage;
 
             $result[] = $s;
+            
         }
 
         $cmd->close();
 
         return $result;
+    
     }
+    
 }
 
 ?>
