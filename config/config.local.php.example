@@ -1,6 +1,8 @@
 <?php
 $local_config['twitter_username'] = 'yourtwitterusername';
 
+$local_config['user_timezone'] = 'yourlocaltimezone';
+
 $local_config['app_base_path'] = 'yourinstallationfolder';
 $local_config['app_anywhere_api_key'] = 'youranywhereapikey';
 

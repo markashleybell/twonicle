@@ -6,6 +6,7 @@ class DB
 {
     private $_db = null;
     private $_prefix = "";
+    public $_db_time_offset = 0;
 
     public function __construct($server, $username, $password, $database, $tableprefix)
     {
@@ -19,6 +20,14 @@ class DB
         $this->_db->set_charset("utf8");
         
         $this->_prefix = $tableprefix;
+        
+        $diff = $this->_db->query("SELECT TIME_FORMAT(NOW() - UTC_TIMESTAMP(), '%H%i') AS `diff`");
+        $result = $diff->fetch_object();
+        $offset = date("Z") - ($result->diff * 36);
+        
+        if(!is_numeric($offset)) $offset = 0;
+        
+        $this->_db_time_offset = " " . (($offset >= 0) ? "+ " . $offset : $offset);
 	}
 
     public function needsUpdate($hours)
@@ -51,11 +60,11 @@ class DB
     {
         $months = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
 
-        $where = ($all) ? "" : "where YEAR(FROM_UNIXTIME(time)) = ? ";
+        $where = ($all) ? "" : "where YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") = ? ";
 
-    	$sql = "select MONTH(FROM_UNIXTIME(time)) as month, YEAR(FROM_UNIXTIME(time)) as year, count(id) as count from " . $this->_prefix . "statuses " . $where .
-	           "group by YEAR(FROM_UNIXTIME(time)), MONTH(FROM_UNIXTIME(time)) " . 
-	           "order by YEAR(FROM_UNIXTIME(time)) desc, MONTH(FROM_UNIXTIME(time)) desc;";
+    	$sql = "select MONTH(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") as month, YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") as year, count(id) as count from " . $this->_prefix . "statuses " . $where .
+	           "group by YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . "), MONTH(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") " . 
+	           "order by YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") desc, MONTH(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") desc;";
 
         $cmd = $this->_db->stmt_init();
         $cmd->prepare($sql);
@@ -130,7 +139,7 @@ class DB
                "from " . $this->_prefix . "statuses as s " .
                "inner join " . $this->_prefix . "people as p " .
                "on p.userid = s.userid " .
-               "where YEAR(FROM_UNIXTIME(time)) = ? AND MONTH(FROM_UNIXTIME(time)) = ? " . 
+               "where YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") = ? AND MONTH(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") = ? " . 
                "order by time desc";
 
         $cmd = $this->_db->stmt_init();
@@ -171,7 +180,7 @@ class DB
                "from " . $this->_prefix . "statuses as s " .
                "inner join " . $this->_prefix . "people as p " .
                "on p.userid = s.userid " .
-               "where YEAR(FROM_UNIXTIME(time)) = ? AND MONTH(FROM_UNIXTIME(time)) = ? AND DAY(FROM_UNIXTIME(time)) = ? " . 
+               "where YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") = ? AND MONTH(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") = ? AND DAY(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") = ? " . 
                "order by time desc";
 
         $cmd = $this->_db->stmt_init();

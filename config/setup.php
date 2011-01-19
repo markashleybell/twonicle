@@ -5,6 +5,8 @@ if(isset($_POST['db_server']))
 {
     $twitter_username = $_POST['twitter_username'];
     
+    $user_timezone = $_POST['user_timezone'];
+
     $db_server = $_POST['db_server'];
     $db_username = $_POST['db_username'];
     $db_password = $_POST['db_password'];
@@ -42,6 +44,8 @@ if(isset($_POST['db_server']))
     $config = <<<CONFIG
 <?php
 \$local_config['twitter_username'] = '$twitter_username';
+
+\$local_config['user_timezone'] = '$user_timezone';
 
 \$local_config['app_base_path'] = '$app_basepath';
 \$local_config['app_anywhere_api_key'] = '$app_anywhereapikey';
@@ -111,6 +115,12 @@ CONFIG;
             <form action="setup" method="post" id="setup-form">
                 <p><label for="twitter_username">Twitter User Name</label>
                 <input type="text" id="twitter_username" name="twitter_username" value="" /></p>
+                <p><label for="user_timezone">Your time zone</label>
+				<select name="user_timezone" id="user_timezone">
+                    <option value="Europe/London">Europe/London</option>
+                    <option value="America/New_York">America/New_York</option>
+                    <!-- ADD THE REST OF THE TIMEZONES HERE -->
+                </select> The time zone (closest major city) that you live in.</p>
                 <p><label for="db_server">Database Server</label>
                 <input type="text" id="db_server" name="db_server" value="localhost" /></p>
                 <p><label for="db_username">Database User Name</label>
