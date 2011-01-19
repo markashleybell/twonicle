@@ -3,7 +3,7 @@
 function displayStatus($status)
 {
     return '<div class="tweet">' .
-               '<a href="http://twitter.com/' . $status->screenname . '"><img src="' . $status->profileimage . '" /></a> ' .
+               '<a class="avatar-link" href="http://twitter.com/' . $status->screenname . '"><img alt="@' . $status->screenname . '" title="" src="' . $status->profileimage . '" /></a> ' .
                '<div class="details">' .
                    '<span class="username"><a href="http://twitter.com/' . $status->screenname . '">' . $status->screenname . '</a></span> ' .
                    '<span class="realname">' . $status->realname . '</span>' .
