@@ -28,7 +28,8 @@ class DB {
         
         if(!is_numeric($offset)) $offset = 0;
         
-        $this->_db_time_offset = " " . (($offset >= 0) ? "+ " . $offset : $offset);
+        // $this->_db_time_offset = " " . (($offset >= 0) ? "+ " . $offset : $offset);
+        $this->_db_time_offset = " + " . 0;
         
     }
 
