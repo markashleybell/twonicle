@@ -63,6 +63,29 @@ class DB {
     
     }
     
+    public function getMaxTweetsInDayForMonth($y, $m)
+    {
+        $sql = "select max(c) from (select DAY(FROM_UNIXTIME(time)) as day, count(id) as c from statuses  " .
+               "where YEAR(FROM_UNIXTIME(time)) = ? and MONTH(FROM_UNIXTIME(time)) = ? " .
+               "group by DAY(FROM_UNIXTIME(time))) as counts";
+        
+        $cmd = $this->_db->stmt_init();
+        $cmd->prepare($sql);
+        $cmd->bind_param("ii", $y, $m);
+        $cmd->execute();
+
+        $cmd->bind_result($_max);
+        
+        $max = 0;
+
+        if ($row = $cmd->fetch())
+            $max = $_max;
+
+        $cmd->close();
+        
+        return $max;
+    }
+    
     public function getDailyTweetCountsForMonth($y, $m) {
         
         $sql = "select DAY(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") as day, count(id) as count from " . $this->_prefix . "statuses  " . 

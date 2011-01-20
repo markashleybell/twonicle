@@ -3,7 +3,7 @@
 // Code adapted from David Walsh's calendar function
 // http://davidwalsh.name/php-calendar
 
-function draw_month($year, $month, $highlight_day, $base_path, $counts) {
+function draw_month($year, $month, $highlight_day, $base_path, $counts, $max) {
 
     /* draw table */
     $calendar = '<table class="calendar">';
@@ -35,7 +35,11 @@ function draw_month($year, $month, $highlight_day, $base_path, $counts) {
         
         $calendar .= '<td>';
         /* add in the day number */
-        $calendar .= '<a href="' . $base_path . $year .'/' . $month . '/' . str_pad($list_day, 2, "0", STR_PAD_LEFT) . '"><span class="day ' . (($highlight_day == $list_day) ? 'current' : '') . '">' . $list_day . ':' . getTweetCountForDay($counts, $list_day) . '</span></a>';
+        
+        $tweettotal = getTweetCountForDay($counts, $list_day);
+        
+        
+        $calendar .= '<a title="' . $tweettotal . ' tweets" style="background-position: 0 ' . (30 - round((($tweettotal / $max) * 30), 2)) . 'px;" href="' . $base_path . $year .'/' . $month . '/' . str_pad($list_day, 2, "0", STR_PAD_LEFT) . '"><span class="day ' . (($highlight_day == $list_day) ? 'current' : '') . '">' . $list_day . '</span></a>';
             
         $calendar .= '</td>';
         
