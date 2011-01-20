@@ -65,9 +65,9 @@ class DB {
     
     public function getMaxTweetsInDayForMonth($y, $m)
     {
-        $sql = "select max(c) from (select DAY(FROM_UNIXTIME(time)) as day, count(id) as c from statuses  " .
-               "where YEAR(FROM_UNIXTIME(time)) = ? and MONTH(FROM_UNIXTIME(time)) = ? " .
-               "group by DAY(FROM_UNIXTIME(time))) as counts";
+        $sql = "select max(c) from (select DAY(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") as day, count(id) as c from " . $this->_prefix . "statuses  " .
+               "where YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") = ? and MONTH(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") = ? " .
+               "group by DAY(FROM_UNIXTIME(time)" . $this->_db_time_offset . ")) as counts";
         
         $cmd = $this->_db->stmt_init();
         $cmd->prepare($sql);
