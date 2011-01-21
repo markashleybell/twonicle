@@ -24,12 +24,11 @@ class DB {
         
         $diff = $this->_db->query("SELECT TIME_FORMAT(NOW() - UTC_TIMESTAMP(), '%H%i') AS `diff`");
         $result = $diff->fetch_object();
-        $offset = date("Z") - ($result->diff * 36);
         
+        $offset = date("Z") - ($result->diff * 36);
         if(!is_numeric($offset)) $offset = 0;
         
-        // $this->_db_time_offset = " " . (($offset >= 0) ? "+ " . $offset : $offset);
-        $this->_db_time_offset = " + " . 0;
+        $this->_db_time_offset = " " . (($offset >= 0) ? "+" . $offset : $offset);
         
     }
 
@@ -65,9 +64,9 @@ class DB {
     
     public function getMaxTweetsInDayForMonth($y, $m)
     {
-        $sql = "select max(c) from (select DAY(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") as day, count(id) as c from " . $this->_prefix . "statuses  " .
-               "where YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") = ? and MONTH(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") = ? " .
-               "group by DAY(FROM_UNIXTIME(time)" . $this->_db_time_offset . ")) as counts";
+        $sql = "select max(c) from (select DAY(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) as day, count(id) as c from " . $this->_prefix . "statuses  " .
+               "where YEAR(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) = ? and MONTH(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) = ? " .
+               "group by DAY(FROM_UNIXTIME(`time`" . $this->_db_time_offset . "))) as counts";
         
         $cmd = $this->_db->stmt_init();
         $cmd->prepare($sql);
@@ -88,10 +87,10 @@ class DB {
     
     public function getDailyTweetCountsForMonth($y, $m) {
         
-        $sql = "select DAY(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") as day, count(id) as count from " . $this->_prefix . "statuses  " . 
-               "where YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") = ? and MONTH(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") = ? " .
-               "group by DAY(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") " . 
-               "order by DAY(FROM_UNIXTIME(time)" . $this->_db_time_offset . ")"; 
+        $sql = "select DAY(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) as day, count(id) as count from " . $this->_prefix . "statuses  " . 
+               "where YEAR(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) = ? and MONTH(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) = ? " .
+               "group by DAY(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) " . 
+               "order by DAY(FROM_UNIXTIME(`time`" . $this->_db_time_offset . "))"; 
                
         $cmd = $this->_db->stmt_init();
         $cmd->prepare($sql);
@@ -123,11 +122,11 @@ class DB {
         
         $months = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
 
-        $where = ($all) ? "" : "where YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") = ? ";
+        $where = ($all) ? "" : "where YEAR(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) = ? ";
 
-        $sql = "select MONTH(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") as month, YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") as year, count(id) as count from " . $this->_prefix . "statuses " . $where .
-               "group by YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . "), MONTH(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") " . 
-               "order by YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") desc, MONTH(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") desc;";
+        $sql = "select MONTH(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) as month, YEAR(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) as year, count(id) as count from " . $this->_prefix . "statuses " . $where .
+               "group by YEAR(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")), MONTH(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) " . 
+               "order by YEAR(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) desc, MONTH(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) desc;";
 
         $cmd = $this->_db->stmt_init();
         $cmd->prepare($sql);
@@ -206,7 +205,7 @@ class DB {
                "from " . $this->_prefix . "statuses as s " .
                "inner join " . $this->_prefix . "people as p " .
                "on p.userid = s.userid " .
-               "where YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") = ? AND MONTH(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") = ? " . 
+               "where YEAR(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) = ? AND MONTH(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) = ? " . 
                "order by time desc";
 
         $cmd = $this->_db->stmt_init();
@@ -249,7 +248,7 @@ class DB {
                "from " . $this->_prefix . "statuses as s " .
                "inner join " . $this->_prefix . "people as p " .
                "on p.userid = s.userid " .
-               "where YEAR(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") = ? AND MONTH(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") = ? AND DAY(FROM_UNIXTIME(time)" . $this->_db_time_offset . ") = ? " . 
+               "where YEAR(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) = ? AND MONTH(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) = ? AND DAY(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) = ? " . 
                "order by time desc";
 
         $cmd = $this->_db->stmt_init();
