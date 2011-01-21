@@ -24,16 +24,17 @@ p { margin: 40px 40px 0 40px; }
 #navigation { margin: 0 0 0 0; width: 218px; float: right; }
 
 .calendar { margin-top: 40px; border: solid 1px #e0e0e0; border-collapse: collapse; }
-.calendar th { border: solid 1px #e0e0e0; padding: 0; }
-.calendar td { border: solid 1px #e0e0e0; padding: 0; }
-.calendar a { display: block; text-decoration: none; width: 30px; height: 30px; background: url(../img/site/bar.gif) 0 0 no-repeat; }
-.calendar a span { display: block; width: 30px; height: 30px; text-align: center; line-height: 30px; }
+.calendar th { border: solid 1px #e0e0e0; padding: 0; color: #999999; }
+.calendar td { border: solid 1px #e0e0e0; padding: 0; color: #7d7d7d;}
+.calendar a { display: block; text-decoration: none; width: 30px; height: 30px; background: url(../img/site/bar.gif) 0 0 no-repeat; color: #000; font-weight: bold; }
+.calendar span { display: block; width: 30px; height: 30px; text-align: center; line-height: 30px; }
 .calendar .current { font-weight: bold; background-color: #e0e0e0; }
+.calendar .noday { background-color: #f4f4f4; }
 
 #year-navigation { margin-top: 40px; width: 218px; list-style: none; text-align: right; }
 #year-navigation li { font-size: 18px; border-top: solid 1px #e0e0e0; }
-#year-navigation a { display: block; text-decoration: none; }
+#year-navigation a { display: block; text-decoration: none; color: #000; }
 #year-navigation span { display: block; padding: 10px; }
-#year-navigation .current-month { background-color: #e0e0e0; }
+#year-navigation .current-month { background-color: #f4f4f4; }
 
 #footer { }

@@ -19,13 +19,25 @@ function draw_month($year, $month, $highlight_day, $base_path, $counts, $max) {
     $day_counter = 0;
     $dates_array = array();
     
+    $rows = 1;
+    $extra_row = '<tr>';
+    
+    for($x = 0; $x < 7; $x++)
+    {
+        
+        $extra_row .= '<td><span class="noday">&nbsp;</span></td>';
+        
+    }
+    
+    $extra_row .= '</tr>';
+    
     /* row for week one */
     $calendar .= '<tr>';
     
     /* print "blank" days until the first of the current week */
     for($x = 0; $x < $running_day; $x++) {
         
-        $calendar .= '<td>&nbsp;</td>';
+        $calendar .= '<td><span class="noday">&nbsp;</span></td>';
         $days_in_this_week++;
         
     }
@@ -38,14 +50,17 @@ function draw_month($year, $month, $highlight_day, $base_path, $counts, $max) {
         
         $tweettotal = getTweetCountForDay($counts, $list_day);
         
-        
-        $calendar .= '<a title="' . $tweettotal . ' tweets" style="background-position: 0 ' . (30 - round((($tweettotal / $max) * 30), 2)) . 'px;" href="' . $base_path . $year .'/' . $month . '/' . str_pad($list_day, 2, "0", STR_PAD_LEFT) . '"><span class="day ' . (($highlight_day == $list_day) ? 'current' : '') . '">' . $list_day . '</span></a>';
+        if($tweettotal > 0)
+            $calendar .= '<a title="' . $tweettotal . ' tweet' . (($tweettotal == 1) ? '' : 's') . '" style="background-position: 0 ' . (30 - round((($tweettotal / $max) * 30), 2)) . 'px;" href="' . $base_path . $year .'/' . $month . '/' . str_pad($list_day, 2, "0", STR_PAD_LEFT) . '"><span class="day ' . (($highlight_day == $list_day) ? 'current' : '') . '">' . $list_day . '</span></a>';
+        else
+            $calendar .= '<span class="day ' . (($highlight_day == $list_day) ? 'current' : '') . '">' . $list_day . '</span>';
             
         $calendar .= '</td>';
         
         if($running_day == 6) {
             
             $calendar .= '</tr>';
+            $rows ++;
             
             if(($day_counter+1) != $days_in_month)
                 $calendar .= '<tr>';
@@ -67,7 +82,7 @@ function draw_month($year, $month, $highlight_day, $base_path, $counts, $max) {
         for($x = 1; $x <= (8 - $days_in_this_week); $x++)
         {
             
-            $calendar.= '<td>&nbsp;</td>';
+            $calendar.= '<td><span class="noday">&nbsp;</span></td>';
             
         }
         
@@ -75,6 +90,9 @@ function draw_month($year, $month, $highlight_day, $base_path, $counts, $max) {
     
     /* final row */
     $calendar .= '</tr>';
+    
+    if($rows < 6)
+        $calendar .= $extra_row;
     
     /* end the table */
     $calendar .= '</table>';
