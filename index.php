@@ -18,7 +18,18 @@ $db = new DB($config['db_server'], $config['db_username'], $config['db_password'
         <link rel="shortcut icon" href="/<?php echo $basepath; ?>img/site/favicon.ico" />
         <script src="http://platform.twitter.com/anywhere.js?id=<?php echo $config['app_anywhere_api_key']; ?>&amp;v=1"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+        <script type="text/javascript" src="/<?php echo $basepath; ?>script/jquery.jsonp-2.1.4.min.js"></script>
+        <script type="text/javascript" src="/<?php echo $basepath; ?>script/json2.js"></script>
         <script type="text/javascript" src="/<?php echo $basepath; ?>script/anywhere.js"></script>
+        <script type="text/javascript">
+            var twitterUserName = '<?php echo $config['twitter_username']; ?>';
+            var mostRecentId = '<?php echo $db->getLastStoredStatusId(); ?>';
+            var appBaseUrl = '<?php echo $config['app_base_path']; ?>';
+        </script>
+        <script type="text/javascript" src="/<?php echo $basepath; ?>script/updater.js"></script>
+        <?php if($db->archiveNeedsUpdate($config['app_update_interval_hours']) && $db->runUpdate($config['app_update_lock_timeout_minutes'])) { ?>
+        <script type="text/javascript" src="/<?php echo $basepath; ?>script/ajax_update.js"></script>
+        <?php } ?>
     </head>
     <body>
         <?php require('include/head.php'); ?>
@@ -29,9 +40,6 @@ $db = new DB($config['db_server'], $config['db_username'], $config['db_password'
             <div id="tweets">
                 <?php
                 
-                if($db->needsUpdate($config['app_update_interval_hours']))
-                    echo '<h2 class="warning">Archive has not been updated for more than ' . $config['app_update_interval_hours'] . ' hours. <a href="/'. $basepath . 'update">Update Now</a>.</h2>';
-        
                 $result = $db->getRecentTweets();
 
                 foreach ($result as $status) {

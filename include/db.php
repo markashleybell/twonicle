@@ -31,8 +31,71 @@ class DB {
         $this->_db_time_offset = " " . (($offset >= 0) ? "+" . $offset : $offset);
         
     }
+    
+    public function runUpdate($locktimeout) {
+        
+        $lastupdatestarttime = strtotime("now");
 
-    public function needsUpdate($hours) {
+        if ($result = $this->_db->query("select v as lastupdatestarted from " . $this->_prefix . "system where k = 'lastupdatestarted'"))  {
+            
+            $row = $result->fetch_object();
+            if($row->lastupdatestarted) $lastupdatestarttime = $row->lastupdatestarted;
+            $result->close();
+            
+        }
+        
+        // Check if there is already an update in progress
+        $processing = false;
+        
+        if ($result = $this->_db->query("select v as processing from " . $this->_prefix . "system where k = 'processing'")) {
+            
+            $row = $result->fetch_object();
+            if($row->processing) $processing = $row->processing;
+            $result->close();
+            
+        }
+        
+        // If a certain amount of time has elapsed since the current update was started, chances are the processing flag got 'stuck'
+        // for some reason (perhaps the user refreshed the page halfway through, there was a temporary communication error etc)
+        // Here we check how long it's been and ignore the flag if enough time has passed (it will get reset if the process is
+        // successful this time around anyway)
+        $minutessinceupdatestarted = (strtotime("now") - $lastupdatestarttime) / 60;
+        
+        if($minutessinceupdatestarted > $locktimeout)
+            $processing = false;
+        
+        // If another client is already performing the update process, hold off until that process is complete
+        if(!$processing)
+        {
+            // Set the flag that tells everyone else there's an update in progress
+            $this->_db->query("update " . $this->_prefix . "system set v = 1 where k = 'processing'");
+            // Set the start time for this update in case it gets interrupted
+            $this->_db->query("update " . $this->_prefix . "system set v = " . strtotime("now") . " where k = 'lastupdatestarted'");
+            
+            // Do the update
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public function getLastStoredStatusId()
+    {
+        // Get the last status id stored, so that we only retrieve new tweets
+        $since = 100;
+        
+        if ($result = $this->_db->query("select max(statusid) as since from " . $this->_prefix . "statuses")) {
+            
+            $row = $result->fetch_object();
+            if($row->since) $since = $row->since;
+            $result->close();
+            
+        }
+        
+        return $since;
+    }
+
+    public function archiveNeedsUpdate($hours) {
         
         // Get the last time the archive was updated
         $_lastupdate = 1000;

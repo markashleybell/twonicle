@@ -7,11 +7,21 @@ var requestTimeout = 5000; // Time out Twitter API calls after 5 seconds
 
 var outputPanel;
 var tweetIdStatus;
+var updateCompleteCallback;
 
 function log(msg, type) {
     
     cls = (typeof type == 'undefined') ? 'std' : type;
-    outputPanel.append('<p class="' + cls + '">' + msg + '</p>');
+    
+    if(typeof outputPanel != 'undefined')
+    {
+        outputPanel.append('<p class="' + cls + '">' + msg + '</p>');
+    }
+    else
+    {
+        if(typeof console == 'object' && typeof console.log == 'function')
+            console.log(msg);
+    }
     
 }
 
@@ -156,7 +166,7 @@ function saveStatus() {
             success: function(data, status, request) { 
                 if(!$('#tweetid').length)
                 {
-                    outputPanel.append('<p>Saving data for tweet <span id="tweetid"></span></p>');                       
+                    log('<p>Saving data for tweet <span id="tweetid"></span></p>');                       
                     tweetIdStatus = $('#tweetid');
                 }
                 tweetIdStatus.html(s.id_str);
@@ -237,15 +247,10 @@ function updateLastUpdateTime() {
         success: function(data, status, request) { 
             log('Update finished at ' + data.lastupdate);
             log('<a href="/' + appBaseUrl + '">Return to archive</a>');
+            if(typeof updateCompleteCallback == 'function')
+                updateCompleteCallback();
         },
         error: handleGenericError
     });
     
 }
-
-$(function() {
-    
-    outputPanel = $('#output');
-    retrieveStatusData();
-    
-});
