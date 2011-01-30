@@ -7,7 +7,7 @@ p { margin: 40px 40px 0 40px; }
 
 #header { }
 
-#tweets { margin: 40px 220px 0 0; }
+.tweets { margin: 40px 220px 0 0; }
 .tweet { overflow: auto; margin: 20px 40px 0 0; }
 .tweet img { float: left; border: none; }
 .tweet span { }

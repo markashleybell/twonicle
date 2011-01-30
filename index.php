@@ -38,7 +38,7 @@ $db = new DB($config['db_server'], $config['db_username'], $config['db_password'
             <div id="navigation">
                 <?php require('include/year_navigation.php'); ?>
             </div>
-            <div id="tweets">
+            <div id="recent" class="tweets">
                 <?php
                 
                 $result = $db->getRecentTweets();

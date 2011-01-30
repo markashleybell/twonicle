@@ -40,7 +40,7 @@ $db = new DB($config['db_server'], $config['db_username'], $config['db_password'
                 <?php echo draw_month($_GET['y'], $_GET['m'], $_GET['d'], '/' . $basepath, $db->getDailyTweetCountsForMonth($_GET['y'], $_GET['m']), $db->getMaxTweetsInDayForMonth($_GET['y'], $_GET['m'])); ?>
                 <?php require('include/year_navigation.php'); ?>
             </div>
-            <div id="tweets">
+            <div id="tweets-<?php echo $_GET['y'] . '-' . $_GET['m'] . '-' . $_GET['d']; ?>" class="tweets">
                 <?php
                 
                 $result = $db->getTweetsByDay($_GET['y'], $_GET['m'], $_GET['d']);

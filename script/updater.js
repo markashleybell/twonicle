@@ -73,7 +73,7 @@ function handleJSONPError(opts, status) {
     // If we got here, there's been an error retrieving the API feed; we need to reset the
     // processing flag so the update can be re-run         
     $.ajax({
-        url: 'reset_processing_flag.php',
+        url: '/' + appBaseUrl + 'reset_processing_flag.php',
         dataType: 'json',
         type: 'POST',
         success: function(data, status, request) { 
@@ -89,7 +89,7 @@ function handleAjaxError(request, status, error) {
     // If we got here, there's been an error saving data; we need to reset the
     // processing flag so the update can be re-run         
     $.ajax({
-        url: 'reset_processing_flag.php',
+        url: '/' + appBaseUrl + 'reset_processing_flag.php',
         dataType: 'json',
         type: 'POST',
         success: function(data, status, request) { 
@@ -159,7 +159,7 @@ function saveStatus() {
         var s = statuses.pop();
 
         $.ajax({
-            url: 'save_status.php',
+            url: '/' + appBaseUrl + 'save_status.php',
             data: { status: JSON.stringify(s) },
             dataType: 'json',
             type: 'POST',
@@ -218,7 +218,7 @@ function saveUser() {
         var u = users.pop();
 
         $.ajax({
-            url: 'save_user.php',
+            url: '/' + appBaseUrl + 'save_user.php',
             data: { user: JSON.stringify(u) },
             dataType: 'json',
             type: 'POST',
@@ -241,7 +241,7 @@ function saveUser() {
 function updateLastUpdateTime() {
     
     $.ajax({
-        url: 'update_lastupdate.php',
+        url: '/' + appBaseUrl + 'update_lastupdate.php',
         dataType: 'json',
         type: 'POST',
         success: function(data, status, request) { 
