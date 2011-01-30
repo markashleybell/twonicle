@@ -15,6 +15,17 @@ function displayStatus(json) {
             
 }
 
+function drawYearNavItem(m, y, count)
+{
+    var now = new Date();
+    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    
+    return '<li' + ((m == (now.getMonth() + 1) && y == now.getFullYear()) ? ' class="current-month"' : '') + '>' +
+           '<a href="/' + appBaseUrl + y + '/' + m + '">' +
+           '<span>' + months[(parseInt(m, 10) - 1)] + ' ' + y +
+           ' (<span class="tweet-count" id="count-' + m + '-' + y + '">' + count + '</span>)</span></a></li>';
+}
+
 updateCompleteCallback = function() {
     
     $.ajax({
@@ -24,11 +35,37 @@ updateCompleteCallback = function() {
         type: 'POST',
         success: function(data, status, request) {
             
+            var link = '', months = [];
+            
             var container = $('#tweets');
             
             $.each(data, function(i, item) {
+                
+                link = item.time.substring(item.time.indexOf('/') + 1, item.time.indexOf(' ')).replace(/\//gi, '-');
+                
+                if(typeof months[link] == 'undefined')
+                    months[link] = 0;
+                    
+                months[link]++;
+                
                 container.prepend(displayStatus(item));
             });
+            
+            for(var m in months)
+            {
+                var e = $('#count-' + m);
+                var count = parseInt(e.html(), 10);
+                
+                if(e.length == 0)
+                {
+                    var d = m.split('-');
+                    $('#year-navigation').prepend(drawYearNavItem(d[0], d[1], months[m]));
+                }
+                else
+                {
+                    e.html((count + months[m]));
+                }
+            }
             
             $('#update-status').remove();
             
@@ -42,7 +79,7 @@ updateCompleteCallback = function() {
 
 $(function(){
     
-    $('body').append('<div id="update-status">Getting new tweets...</div>');
+    $('body').append('<div id="update-status">Fetching new tweets <img src="/' + appBaseUrl + 'img/site/ajax-loader.gif" width="16" height="16" alt="Loading" /></div>');
     retrieveStatusData();
     
 });

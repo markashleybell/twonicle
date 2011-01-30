@@ -3,7 +3,6 @@
 require('config/config.php');
 require('include/db.php');
 
-$jsbasepath = $config['app_base_path'];
 $basepath = ($config['app_base_path'] == '') ? '' : $config['app_base_path'] . '/';
 
 $db = new DB($config['db_server'], $config['db_username'], $config['db_password'], $config['db_database'], $config['db_table_prefix']);
@@ -41,7 +40,7 @@ if(!$db->runUpdate($config['app_update_lock_timeout_minutes'])) {
             <script type="text/javascript">
                 var twitterUserName = '<?php echo $config['twitter_username']; ?>';
                 var mostRecentId = '<?php echo $db->getLastStoredStatusId(); ?>';
-                var appBaseUrl = '<?php echo $jsbasepath; ?>';
+                var appBaseUrl = '<?php echo $basepath; ?>';
             </script>
             <script type="text/javascript" src="script/updater.js"></script>
             <script type="text/javascript">

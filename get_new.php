@@ -20,7 +20,8 @@ $sql = "select s.statusid, s.rtstatusid, s.inreplytoid, s.inreplytouser, s.time,
        "inner join " . $config['db_table_prefix']  . "people as p " .
        "on p.userid = s.userid where `statusid` > ? and `statusid` != ? order by `statusid`";
        
-// Note: I do not understand why we have to do this in the WHERE clause, but for some reason MySQL thinks that
+// Note: I do not understand why we have to do this in the WHERE clause, but for some reason MySQL thinks that the last
+// status ID is greater than itself...
 
 $cmd = $db->stmt_init();
 $cmd->prepare($sql);
@@ -40,7 +41,7 @@ while ($row = $cmd->fetch()) {
     $s->inreplytoid = $_inreplytoid;
     $s->inreplytouser = $_inreplytouser;
     
-    $s->time = date('d/m/y H:i', $_time);
+    $s->time = date('d/m/Y H:i', $_time);
     $s->text = linkify($_text);
     $s->screenname = $_screenname;
     $s->realname = $_realname; 

@@ -9,7 +9,7 @@ function displayStatus($status) {
                    '<span class="realname">' . $status->realname . '</span>' .
                    '<span class="text">' . $status->text . '</span>' . 
                    '<span class="date">' .
-                       '<a href="http://twitter.com/' . $status->screenname . '/status/' . (($status->rtid != 0) ? $status->rtid : $status->id) . '">' . date('d/m/y H:i', $status->time) . '</a>' .
+                       '<a href="http://twitter.com/' . $status->screenname . '/status/' . (($status->rtid != 0) ? $status->rtid : $status->id) . '">' . date('d/m/Y H:i', $status->time) . '</a>' .
                        (($status->inreplytoid != 0) ? ' in reply to <a href="http://twitter.com/' . $status->inreplytouser . '/status/' . $status->inreplytoid . '">this</a>' : '') .
                     '</span>' .
                '</div>' .

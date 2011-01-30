@@ -26,7 +26,7 @@ $db = new DB($config['db_server'], $config['db_username'], $config['db_password'
         <script type="text/javascript">
             var twitterUserName = '<?php echo $config['twitter_username']; ?>';
             var mostRecentId = '<?php echo $db->getLastStoredStatusId(); ?>';
-            var appBaseUrl = '<?php echo $config['app_base_path']; ?>';
+            var appBaseUrl = '<?php echo $basepath; ?>';
         </script>
         <script type="text/javascript" src="/<?php echo $basepath; ?>script/updater.js"></script>
         <?php if($db->archiveNeedsUpdate($config['app_update_interval_hours']) && $db->runUpdate($config['app_update_lock_timeout_minutes'])) { ?>
