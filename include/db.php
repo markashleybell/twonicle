@@ -148,6 +148,49 @@ class DB {
         return $max;
     }
     
+    public function getNewTweets($since) {
+        
+        $sql = "select s.statusid, s.rtstatusid, s.inreplytoid, s.inreplytouser, s.time, s.text, p.screenname, p.realname, p.profileimage " .
+               "from " . $this->_prefix  . "statuses as s " .
+               "inner join " . $this->_prefix  . "people as p on p.userid = s.userid " .
+               "where s.statusid > ? order by s.statusid";
+                
+        // echo $sql . ' - ' . $since;
+        
+        $cmd = $this->_db->stmt_init();
+        $cmd->prepare($sql);
+        $cmd->bind_param("s", $since);
+        $cmd->execute();
+        
+        $cmd->bind_result($_statusid, $_rtstatusid, $_inreplytoid, $_inreplytouser, $_time, $_text, $_screenname, $_realname, $_profileimage);
+        
+        $result = array();
+        
+        while ($row = $cmd->fetch()) {
+            
+            $s = new Status();
+            
+            $s->id = $_statusid;
+            $s->rtid = $_rtstatusid;
+            $s->inreplytoid = $_inreplytoid;
+            $s->inreplytouser = $_inreplytouser;
+            
+            $s->time = date('d/m/Y H:i', $_time);
+            $s->text = linkify($_text);
+            $s->screenname = $_screenname;
+            $s->realname = $_realname; 
+            $s->profileimage = $_profileimage;
+        
+            $result[] = $s;
+            
+        }
+        
+        $cmd->close();
+        
+        return $result;
+    
+    }
+    
     public function getDailyTweetCountsForMonth($y, $m) {
         
         $sql = "select DAY(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) as day, count(id) as count from " . $this->_prefix . "statuses  " . 
