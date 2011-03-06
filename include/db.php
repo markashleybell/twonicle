@@ -266,6 +266,50 @@ class DB {
     
     }
     
+    public function getPicks() {
+        
+        $sql = "select s.statusid, s.rtstatusid, s.inreplytoid, s.inreplytouser, s.time, s.text, p.screenname, p.realname, p.profileimage, s.pick " .
+               "from " . $this->_prefix . "statuses as s " .
+               "inner join " . $this->_prefix . "people as p " .
+               "on p.userid = s.userid " .
+               "where s.pick = 1 " .
+               "order by time desc limit 2000";
+
+        $cmd = $this->_db->stmt_init();
+        $cmd->prepare($sql);
+        $cmd->execute();
+
+        $cmd->bind_result($_statusid, $_rtstatusid, $_inreplytoid, $_inreplytouser, $_time, $_text, $_screenname, $_realname, $_profileimage, $_pick);
+
+        $result = array();
+
+        while ($row = $cmd->fetch()) {
+            
+            $s = new Status();
+            
+            $s->id = $_statusid;
+            $s->rtid = $_rtstatusid;
+            $s->inreplytoid = $_inreplytoid;
+            $s->inreplytouser = $_inreplytouser;
+            
+            $s->time = $_time;
+            $s->text = linkify($_text);
+            $s->screenname = $_screenname;
+            $s->realname = $_realname; 
+            $s->profileimage = $_profileimage;
+            
+            $s->pick = $_pick;
+
+            $result[] = $s;
+            
+        }
+
+        $cmd->close();
+        
+        return $result;
+    
+    }
+
     public function getRecentTweets() {
         
         $sql = "select s.statusid, s.rtstatusid, s.inreplytoid, s.inreplytouser, s.time, s.text, p.screenname, p.realname, p.profileimage, s.pick " .
