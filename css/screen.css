@@ -11,14 +11,17 @@ p { margin: 40px 40px 0 40px; }
 .tweet { overflow: auto; margin: 20px 40px 0 0; }
 .tweet img { float: left; border: none; }
 .tweet span { }
-.details { margin-left: 68px; }
+.details { margin-left: 68px; overflow: hidden; }
 .username { font-size: 16px; font-weight: bold; margin-right: 8px; }
 .username a { text-decoration: none; color: #000; }
 .realname { font-size: 14px; color: #999; }
 .text { display: block; font-size: 18px; padding: 2px 0 5px 0; }
-.date { font-size: 11px; color: #999; }
+.date { font-size: 11px; color: #999; float: left; }
 .date a { outline: none; color: #999; }
-.pick a { outline: none; color: #000; }
+.pick { float: left; width: 15px; height: 10px; }
+.pick a { margin-left: 5px; outline: none; color: #000; text-indent: -100em; display: block; width: 10px; height: 10px; background: url(../img/site/star-0.png) 0 0 no-repeat; }
+
+.pick a.picked { background-image: url(../img/site/star-1.png) }
 
 .warning, .warning a { color: #cc0000; }
 
