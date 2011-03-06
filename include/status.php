@@ -13,6 +13,8 @@ class Status {
     public $realname; 
     public $profileimage;
     
+    public $pick;
+    
 }
 
 ?>

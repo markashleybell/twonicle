@@ -7,7 +7,7 @@ $config['user_timezone'] = $local_config['user_timezone'];
 
 $config['app_base_path'] = $local_config['app_base_path'];
 $config['app_anywhere_api_key'] = $local_config['app_anywhere_api_key'];
-$config['app_update_interval_hours'] = 2;
+$config['app_update_interval_hours'] = 0;
 $config['app_update_lock_timeout_minutes'] = 5;
 
 $config['db_server'] = $local_config['db_server'];

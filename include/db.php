@@ -150,7 +150,7 @@ class DB {
     
     public function getNewTweets($since) {
         
-        $sql = "select s.statusid, s.rtstatusid, s.inreplytoid, s.inreplytouser, s.time, s.text, p.screenname, p.realname, p.profileimage " .
+        $sql = "select s.statusid, s.rtstatusid, s.inreplytoid, s.inreplytouser, s.time, s.text, p.screenname, p.realname, p.profileimage, s.pick " .
                "from " . $this->_prefix  . "statuses as s " .
                "inner join " . $this->_prefix  . "people as p on p.userid = s.userid " .
                "where s.statusid > ? order by s.statusid";
@@ -162,7 +162,7 @@ class DB {
         $cmd->bind_param("s", $since);
         $cmd->execute();
         
-        $cmd->bind_result($_statusid, $_rtstatusid, $_inreplytoid, $_inreplytouser, $_time, $_text, $_screenname, $_realname, $_profileimage);
+        $cmd->bind_result($_statusid, $_rtstatusid, $_inreplytoid, $_inreplytouser, $_time, $_text, $_screenname, $_realname, $_profileimage, $_pick);
         
         $result = array();
         
@@ -180,6 +180,8 @@ class DB {
             $s->screenname = $_screenname;
             $s->realname = $_realname; 
             $s->profileimage = $_profileimage;
+            
+            $s->pick = $_pick;
         
             $result[] = $s;
             
@@ -266,7 +268,7 @@ class DB {
     
     public function getRecentTweets() {
         
-        $sql = "select s.statusid, s.rtstatusid, s.inreplytoid, s.inreplytouser, s.time, s.text, p.screenname, p.realname, p.profileimage " .
+        $sql = "select s.statusid, s.rtstatusid, s.inreplytoid, s.inreplytouser, s.time, s.text, p.screenname, p.realname, p.profileimage, s.pick " .
                "from " . $this->_prefix . "statuses as s " .
                "inner join " . $this->_prefix . "people as p " .
                "on p.userid = s.userid " .
@@ -276,7 +278,7 @@ class DB {
         $cmd->prepare($sql);
         $cmd->execute();
 
-        $cmd->bind_result($_statusid, $_rtstatusid, $_inreplytoid, $_inreplytouser, $_time, $_text, $_screenname, $_realname, $_profileimage);
+        $cmd->bind_result($_statusid, $_rtstatusid, $_inreplytoid, $_inreplytouser, $_time, $_text, $_screenname, $_realname, $_profileimage, $_pick);
 
         $result = array();
 
@@ -294,6 +296,8 @@ class DB {
             $s->screenname = $_screenname;
             $s->realname = $_realname; 
             $s->profileimage = $_profileimage;
+            
+            $s->pick = $_pick;
 
             $result[] = $s;
             
@@ -307,7 +311,7 @@ class DB {
 
     public function getTweetsByMonth($y, $m) {
         
-        $sql = "select s.statusid, s.rtstatusid, s.inreplytoid, s.inreplytouser, s.time, s.text, p.screenname, p.realname, p.profileimage " .
+        $sql = "select s.statusid, s.rtstatusid, s.inreplytoid, s.inreplytouser, s.time, s.text, p.screenname, p.realname, p.profileimage, s.pick " .
                "from " . $this->_prefix . "statuses as s " .
                "inner join " . $this->_prefix . "people as p " .
                "on p.userid = s.userid " .
@@ -319,7 +323,7 @@ class DB {
         $cmd->bind_param("ii", $y, $m);
         $cmd->execute();
 
-        $cmd->bind_result($_statusid, $_rtstatusid, $_inreplytoid, $_inreplytouser, $_time, $_text, $_screenname, $_realname, $_profileimage);
+        $cmd->bind_result($_statusid, $_rtstatusid, $_inreplytoid, $_inreplytouser, $_time, $_text, $_screenname, $_realname, $_profileimage, $_pick);
 
         $result = array();
 
@@ -337,6 +341,8 @@ class DB {
             $s->screenname = $_screenname;
             $s->realname = $_realname; 
             $s->profileimage = $_profileimage;
+            
+            $s->pick = $_pick;
 
             $result[] = $s;
             
@@ -350,7 +356,7 @@ class DB {
 
     public function getTweetsByDay($y, $m, $d) {
         
-        $sql = "select s.statusid, s.rtstatusid, s.inreplytoid, s.inreplytouser, s.time, s.text, p.screenname, p.realname, p.profileimage " .
+        $sql = "select s.statusid, s.rtstatusid, s.inreplytoid, s.inreplytouser, s.time, s.text, p.screenname, p.realname, p.profileimage, s.pick " .
                "from " . $this->_prefix . "statuses as s " .
                "inner join " . $this->_prefix . "people as p " .
                "on p.userid = s.userid " .
@@ -362,7 +368,7 @@ class DB {
         $cmd->bind_param("iii", $y, $m, $d);
         $cmd->execute();
 
-        $cmd->bind_result($_statusid, $_rtstatusid, $_inreplytoid, $_inreplytouser, $_time, $_text, $_screenname, $_realname, $_profileimage);
+        $cmd->bind_result($_statusid, $_rtstatusid, $_inreplytoid, $_inreplytouser, $_time, $_text, $_screenname, $_realname, $_profileimage, $_pick);
 
         $result = array();
 
@@ -380,6 +386,8 @@ class DB {
             $s->screenname = $_screenname;
             $s->realname = $_realname; 
             $s->profileimage = $_profileimage;
+            
+            $s->pick = $_pick;
 
             $result[] = $s;
             

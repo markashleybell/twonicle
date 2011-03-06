@@ -31,6 +31,7 @@ $db = new DB($config['db_server'], $config['db_username'], $config['db_password'
         <?php if($db->archiveNeedsUpdate($config['app_update_interval_hours']) && $db->runUpdate($config['app_update_lock_timeout_minutes'])) { ?>
         <script type="text/javascript" src="/<?php echo $basepath; ?>script/ajax_update.js"></script>
         <?php } ?>
+        <script type="text/javascript" src="/<?php echo $basepath; ?>script/pick.js"></script>
     </head>
     <body>
         <?php require('include/head.php'); ?>
@@ -45,7 +46,7 @@ $db = new DB($config['db_server'], $config['db_username'], $config['db_password'
 
                 foreach ($result as $status) {
                     
-                    echo displayStatus($status);
+                    echo displayStatus($status, $basepath);
                     
                 }
                 

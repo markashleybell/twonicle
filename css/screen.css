@@ -18,6 +18,7 @@ p { margin: 40px 40px 0 40px; }
 .text { display: block; font-size: 18px; padding: 2px 0 5px 0; }
 .date { font-size: 11px; color: #999; }
 .date a { outline: none; color: #999; }
+.pick a { outline: none; color: #000; }
 
 .warning, .warning a { color: #cc0000; }
 

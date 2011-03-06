@@ -9,7 +9,8 @@ function displayStatus(json) {
                     '<span class="date">' +
                         '<a href="http://twitter.com/' + json.screenname + '/status/' + ((json.rtid != 0) ? json.rtid : json.id) + '">' + json.time + '</a>' +
                         ((json.inreplytoid != 0) ? ' in reply to <a href="http://twitter.com/' + json.inreplytouser + '/status/' + json.inreplytoid + '">this</a>' : '') +
-                     '</span>' +
+                    '</span>' +
+                    '<span class="pick"><a id="pick-' + json.id + '"' + ((json.pick == 0) ? '' : ' class="picked"') + ' href="#">' + ((json.pick == 0) ? 'NOT' : 'PICK') + '</a></span>' +
                 '</div>' +
             '</div>';
             
