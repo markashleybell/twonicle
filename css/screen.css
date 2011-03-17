@@ -5,7 +5,10 @@ p { margin: 40px 40px 0 40px; }
 
 #container { overflow: auto; margin: 0 40px; }
 
-#header { }
+#header { position: relative; }
+
+#search-form { width: 200px; text-align: right; position: absolute; top: -4px; right: 40px; }
+#search-form p { margin: 0; }
 
 .tweets { margin: 40px 220px 0 0; }
 .tweet { overflow: auto; margin: 20px 40px 0 0; }

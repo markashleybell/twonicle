@@ -14,6 +14,8 @@ class Status {
     public $profileimage;
     
     public $pick;
+
+    public $rank;
     
 }
 
