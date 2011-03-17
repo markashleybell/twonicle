@@ -15,6 +15,7 @@ p { margin: 40px 40px 0 40px; }
 .tweet img { float: left; border: none; }
 .tweet span { }
 .details { margin-left: 68px; overflow: hidden; }
+.plain-text .details { margin-left: 0; }
 .username { font-size: 16px; font-weight: bold; margin-right: 8px; }
 .username a { text-decoration: none; color: #000; }
 .realname { font-size: 14px; color: #999; }

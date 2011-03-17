@@ -10,6 +10,7 @@ $basepath = ($config['app_base_path'] == '') ? '' : $config['app_base_path'] . '
 
 $db = new DB($config['db_server'], $config['db_username'], $config['db_password'], $config['db_database'], $config['db_table_prefix']);
 
+$plainText = isset($_GET["text"]);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
@@ -39,14 +40,17 @@ $db = new DB($config['db_server'], $config['db_username'], $config['db_password'
             <div id="navigation">
                 <?php require('include/year_navigation.php'); ?>
             </div>
-            <div id="recent" class="tweets">
+            <div id="recent" class="tweets<?php echo (($plainText) ? ' plain-text' : ''); ?>">
                 <?php
                 
                 $result = $db->getPicks();
 
                 foreach ($result as $status) {
                     
-                    echo displayStatus($status, $basepath);
+                    if($plainText)
+                        echo displayStatusPlainText($status, $basepath);
+                    else
+                        echo displayStatus($status, $basepath);
                     
                 }
                 
