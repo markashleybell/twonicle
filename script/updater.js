@@ -102,7 +102,7 @@ function handleAjaxError(request, status, error) {
 function retrieveStatusData() {
     
     $.jsonp({
-        url: 'http://api.twitter.com/1/statuses/user_timeline.json?callback=?',
+        url: 'https://api.twitter.com/1/statuses/user_timeline.json?callback=?',
         data: { screen_name: twitterUserName, include_rts: 1, trim_user: 1, count: 200, since_id: mostRecentId, page: currentPage },
         timeout: requestTimeout,
         success: function(data, status, request) { 
@@ -192,7 +192,7 @@ function retrieveUserData() {
         var id = userIds.pop();
         
         $.jsonp({
-            url: 'http://api.twitter.com/1/users/show.json?callback=?',
+            url: 'https://api.twitter.com/1/users/show.json?callback=?',
             data: { user_id: id },
             timeout: requestTimeout,
             success: function(data, status, request) { 
