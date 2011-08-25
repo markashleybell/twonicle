@@ -101,7 +101,24 @@ updateCompleteCallback = function() {
 
 $(function(){
     
-    $('body').append('<div id="update-status">Fetching new tweets <img src="/' + appBaseUrl + 'img/site/ajax-loader.gif" width="16" height="16" alt="Loading" /></div>');
-    retrieveStatusData();
+    // Check whether an update is needed
+    $.ajax({
+        url: '/' + appBaseUrl + 'check_update_needed.php?r=' + new Date().getTime(),
+        dataType: 'json',
+        type: 'GET',
+        success: function(data, status, request) {
+            
+            // If the result is 1, it's time for an update
+            if(parseInt(data) === 1)
+            {
+                $('body').append('<div id="update-status">Fetching new tweets <img src="/' + appBaseUrl + 'img/site/ajax-loader.gif" width="16" height="16" alt="Loading" /></div>');
+                retrieveStatusData();
+            }
+            
+        },
+        error: function(request, status, error) {
+            // Show an error indicator
+        }
+    });
     
 });

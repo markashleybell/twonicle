@@ -1,5 +1,9 @@
 <?php
 
+header("Cache-Control: private, must-revalidate, max-age=0");
+header("Pragma: no-cache");
+header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
+
 require('config/config.php');
 require('include/status.php');
 require('include/month.php');
@@ -28,9 +32,7 @@ $db = new DB($config['db_server'], $config['db_username'], $config['db_password'
             var appBaseUrl = '<?php echo $basepath; ?>';
         </script>
         <script type="text/javascript" src="/<?php echo $basepath; ?>script/updater.js"></script>
-        <?php if($db->archiveNeedsUpdate($config['app_update_interval_hours']) && $db->runUpdate($config['app_update_lock_timeout_minutes'])) { ?>
         <script type="text/javascript" src="/<?php echo $basepath; ?>script/ajax_update.js"></script>
-        <?php } ?>
         <script type="text/javascript" src="/<?php echo $basepath; ?>script/pick.js"></script>
     </head>
     <body>
