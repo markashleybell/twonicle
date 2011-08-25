@@ -274,7 +274,7 @@ class DB {
                "inner join " . $this->_prefix . "people as p " .
                "on p.userid = s.userid " .
                "where MATCH(s.text) AGAINST (? IN BOOLEAN MODE) > 0 " .
-               "order by rank desc, time desc limit 2000";
+               "order by rank desc, statusid desc limit 2000";
 
         $cmd = $this->_db->stmt_init();
         $cmd->prepare($sql);
@@ -321,7 +321,7 @@ class DB {
                "inner join " . $this->_prefix . "people as p " .
                "on p.userid = s.userid " .
                "where s.pick = 1 " .
-               "order by time desc limit 2000";
+               "order by statusid desc limit 2000";
 
         $cmd = $this->_db->stmt_init();
         $cmd->prepare($sql);
@@ -364,7 +364,7 @@ class DB {
                "from " . $this->_prefix . "statuses as s " .
                "inner join " . $this->_prefix . "people as p " .
                "on p.userid = s.userid " .
-               "order by time desc limit 100";
+               "order by statusid desc limit 100";
 
         $cmd = $this->_db->stmt_init();
         $cmd->prepare($sql);
@@ -408,7 +408,7 @@ class DB {
                "inner join " . $this->_prefix . "people as p " .
                "on p.userid = s.userid " .
                "where YEAR(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) = ? AND MONTH(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) = ? " . 
-               "order by time desc";
+               "order by statusid desc";
 
         $cmd = $this->_db->stmt_init();
         $cmd->prepare($sql);
@@ -453,7 +453,7 @@ class DB {
                "inner join " . $this->_prefix . "people as p " .
                "on p.userid = s.userid " .
                "where YEAR(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) = ? AND MONTH(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) = ? AND DAY(FROM_UNIXTIME(`time`" . $this->_db_time_offset . ")) = ? " . 
-               "order by time desc";
+               "order by statusid desc";
 
         $cmd = $this->_db->stmt_init();
         $cmd->prepare($sql);
